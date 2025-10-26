@@ -47,7 +47,10 @@
 #include "kp/automation.hpp"
 #include "kp/controller.hpp"
 #include "kp/chassis.hpp"
-#include "kp/utility.hpp"
+#include "kp/intake.hpp"
+#include "kp/matchload.hpp"
+#include "kp/park.hpp"
+
 
 #include "automation/test.hpp"
 
