@@ -50,7 +50,7 @@
 #include "kp/intake.hpp"
 #include "kp/matchload.hpp"
 #include "kp/park.hpp"
-
+#include "kp/utility.hpp"
 
 #include "automation/test.hpp"
 
