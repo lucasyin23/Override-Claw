@@ -47,12 +47,15 @@
 #include "kp/automation.hpp"
 #include "kp/controller.hpp"
 #include "kp/chassis.hpp"
-#include "kp/intake.hpp"
 #include "kp/matchload.hpp"
 #include "kp/park.hpp"
+#include "kp/intake.hpp"
 #include "kp/utility.hpp"
 
 #include "automation/test.hpp"
+#include "automation/red.hpp"
+#include "automation/blue.hpp"
+
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do

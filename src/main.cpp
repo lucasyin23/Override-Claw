@@ -7,6 +7,8 @@ void initialize() {
 	pros::lcd::initialize();
   kp::chassis::initialize();
   kp::controller::initialize();
+  kp::intake::initialize();
+  
   
   kp::automation::set("TEST", automation::test);
 }
@@ -21,7 +23,8 @@ void autonomous() {
 
 void opcontrol() {
   lemlib::Chassis *chassis = kp::chassis::get_chassis();
-
+  pros::Controller master(pros::E_CONTROLLER_MASTER);
+  // pre-ready loop
   while (kp::controller::is_ready() == false) {
     if (kp::controller::lock() == false) {
       kp::controller::delay();
@@ -38,6 +41,20 @@ void opcontrol() {
 
     if (CTRL_PRESS_ONCE(DOWN)) {
       kp::automation::launch_selection();
+    }
+
+     if (CTRL_PRESS_ONCE(X)) {
+      alliance = "BLUE";
+      kp::automation::clear();
+
+      CTRL_VIBRATE(".")
+    }
+
+    if (CTRL_PRESS_ONCE(Y)) {
+      alliance = "RED";
+      kp::automation::clear();
+
+      CTRL_VIBRATE(".")
     }
 
     if (CTRL_PRESS_ONCE(R1)) {
@@ -73,11 +90,57 @@ void opcontrol() {
   LCD_MAIN_CLEAR
   LCD_1("# %s # %s", alliance, kp::automation::title())
 
+    // --- Intake Toggle Setup ---
+  enum IntakeMode { STOPPED, PICKUP, OUTTAKE, FEED_TOP, SCORE };
+  IntakeMode currentMode = STOPPED;
   while (kp::controller::is_ready() == true) {
 
+    // Intake toggle logic
+    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)) {
+      if (currentMode == PICKUP) {
+        kp::intake::stop();
+        currentMode = STOPPED;
+      } else {
+        kp::intake::pickup();
+        currentMode = PICKUP;
+      }
+    }
+
+    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)) {
+      if (currentMode == OUTTAKE) {
+        kp::intake::stop();
+        currentMode = STOPPED;
+      } else {
+        kp::intake::outtake();
+        currentMode = OUTTAKE;
+      }
+    }
+
+    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
+      if (currentMode == FEED_TOP) {
+        kp::intake::stop();
+        currentMode = STOPPED;
+      } else {
+        kp::intake::feed_top();
+        currentMode = FEED_TOP;
+      }
+    }
+
+    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
+      if (currentMode == SCORE) {
+        kp::intake::stop();
+        currentMode = STOPPED;
+      } else {
+        kp::intake::score();
+        currentMode = SCORE;
+      }
+    }
+
+    // --- Drive controls ---
     #ifdef CONTROLLER_MOVEMENT
     kp::chassis::track_dual_joystick(1.6, 1);
     #endif
+
     kp::controller::delay();
   }
 }
