@@ -1,4 +1,5 @@
 #include "main.h"
+#include "kp/intake.hpp"
 
 #define CONTROLLER_MOVEMENT
 std::string alliance = "N/A";
@@ -46,14 +47,14 @@ void opcontrol() {
      if (CTRL_PRESS_ONCE(X)) {
       alliance = "BLUE";
       kp::automation::clear();
-
+      kp::automation::set("BRL", automation::regional_left);
       CTRL_VIBRATE(".")
     }
 
     if (CTRL_PRESS_ONCE(Y)) {
       alliance = "RED";
       kp::automation::clear();
-
+      kp::automation::set("RRL", automation::regional_left);
       CTRL_VIBRATE(".")
     }
 

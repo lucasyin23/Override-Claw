@@ -1,12 +1,15 @@
 #pragma once
-#include "main.h"
+#include "pros/motors.hpp"
 
 namespace kp::intake {
-    void initialize();
+    extern pros::Motor lower_motor;
+    extern pros::Motor middle_motor;
+    extern pros::Motor scorer;
 
-    void outtake();           // L2: reverse all
-    void feed_top();          // R2: lower+middle forward, scorer reverse
-    void score();             // R1: all forward
-    void pickup();            // L1: lower+middle only
-    void stop();              // stop all
+    void initialize();
+    void outtake();
+    void feed_top();
+    void score();
+    void pickup();
+    void stop();
 }

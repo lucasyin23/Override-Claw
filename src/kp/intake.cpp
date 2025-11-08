@@ -1,10 +1,9 @@
 #include "main.h" 
 #include <cmath> 
 namespace kp::intake {
-        pros::Motor lower_motor(-1);
+        pros::Motor lower_motor(1);
         pros::Motor middle_motor(2);
         pros::Motor scorer(3);
-        pros::Controller master(pros::E_CONTROLLER_MASTER);
 
     void initialize() {
         lower_motor.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
