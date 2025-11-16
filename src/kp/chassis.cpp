@@ -7,21 +7,21 @@ namespace kp::chassis {
 
     // motor groups
     pros::MotorGroup left_motors({-11, 12, -13}, pros::MotorGearset::blue); 
-    pros::MotorGroup right_motors({-18, -19, 20}, pros::MotorGearset::blue); 
+    pros::MotorGroup right_motors({18, 19, -20}, pros::MotorGearset::blue); 
 
-    // tracking wheels
-    pros::Rotation horizontal_encoder(-9);
+     // tracking wheels
+    /* pros::Rotation horizontal_encoder(-9);
     pros::Rotation vertical_encoder(-10);
 
     lemlib::TrackingWheel horizontal(&horizontal_encoder, lemlib::Omniwheel::NEW_275, -3.25);
-    lemlib::TrackingWheel vertical(&vertical_encoder, lemlib::Omniwheel::NEW_275, 0);
-
+    lemlib::TrackingWheel vertical(&vertical_encoder, lemlib::Omniwheel::NEW_275, 0); */
+    
     // drivetrain settings
     lemlib::Drivetrain drivetrain(&left_motors, // left motor group
                                   &right_motors, // right motor group
                                   10.75, // track width
                                   lemlib::Omniwheel::NEW_275,
-                                  360, // drivetrain rpm on the wheels
+                                  450, // drivetrain rpm on the wheels
                                   2 // horizontal drift is 2. If we had traction wheels, it would have been 8
     );
 
@@ -50,9 +50,9 @@ namespace kp::chassis {
     );
 
     // sensors for odometry
-    lemlib::OdomSensors sensors(&vertical, // vertical tracking wheel
+    lemlib::OdomSensors sensors(nullptr, // vertical tracking wheel dont have
                                 nullptr, // vertical tracking wheel 2, set to nullptr as we don't have a second one
-                                &horizontal, // horizontal tracking wheel
+                                nullptr, // horizontal tracking wheel dont have
                                 nullptr, // horizontal tracking wheel 2, set to nullptr as we don't have a second one
                                 &imu // inertial sensor
     );
@@ -455,12 +455,10 @@ namespace kp::chassis {
   void backwards(int voltage) {
     move_by_time(0, 0 - abs(voltage));
   }
-
   void move_gyro(double inch) {
-    lemlib::Omniwheel::NEW_275 * M_PI * ((double)vertical_encoder.get_position() / 100.00 / 360.0);
+    //     lemlib::Omniwheel::NEW_275 * M_PI * ((double)vertical_encoder.get_position() / 100.00 / 360.0);
     _move_gyro(get_position() + inch);
-  }
-
+}
   double get_left_velocity() {
     return left_motors.get_actual_velocity();
   }
@@ -509,10 +507,10 @@ namespace kp::chassis {
   }
 
   float get_vertical_traveled() {
-    return vertical.getDistanceTraveled();
+    return 0.0; // vertical.getDistanceTraveled();
   }
 
   int get_vertical_raw() {
-    return vertical_encoder.get_position();
+    return 0.0; // vertical_encoder.get_position();
   }
 }

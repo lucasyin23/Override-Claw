@@ -11,5 +11,6 @@ namespace kp::intake {
     void feed_top();
     void score();
     void pickup();
+    void only();
     void stop();
 }

@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "Sparrower",
+    "project_name": "Sparrows",
     "target": "v5",
     "templates": {
       "LemLib": {
@@ -299,7 +299,7 @@
     },
     "upload_options": {
       "description": "2025-26 Push Back Bot 1",
-      "icon": "pizza",
+      "icon": "robot",
       "slot": 1
     },
     "use_early_access": false

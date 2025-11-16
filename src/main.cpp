@@ -1,5 +1,6 @@
 #include "main.h"
 #include "kp/intake.hpp"
+#include "pros/misc.h"
 
 #define CONTROLLER_MOVEMENT
 std::string alliance = "N/A";
@@ -47,14 +48,14 @@ void opcontrol() {
      if (CTRL_PRESS_ONCE(X)) {
       alliance = "BLUE";
       kp::automation::clear();
-      kp::automation::set("BRL", automation::regional_left);
+
       CTRL_VIBRATE(".")
     }
 
     if (CTRL_PRESS_ONCE(Y)) {
       alliance = "RED";
       kp::automation::clear();
-      kp::automation::set("RRL", automation::regional_left);
+
       CTRL_VIBRATE(".")
     }
 
@@ -91,57 +92,35 @@ void opcontrol() {
   LCD_MAIN_CLEAR
   LCD_1("# %s # %s", alliance, kp::automation::title())
 
-    // --- Intake Toggle Setup ---
-  enum IntakeMode { STOPPED, PICKUP, OUTTAKE, FEED_TOP, SCORE };
-  IntakeMode currentMode = STOPPED;
-  while (kp::controller::is_ready() == true) {
+while (kp::controller::is_ready() == true) {
 
-    // Intake toggle logic
-    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)) {
-      if (currentMode == PICKUP) {
-        kp::intake::stop();
-        currentMode = STOPPED;
-      } else {
-        kp::intake::pickup();
-        currentMode = PICKUP;
-      }
-    }
+  // --- Intake hold controls (NOT TOGGLE) ---
 
-    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)) {
-      if (currentMode == OUTTAKE) {
-        kp::intake::stop();
-        currentMode = STOPPED;
-      } else {
-        kp::intake::outtake();
-        currentMode = OUTTAKE;
-      }
-    }
-
-    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
-      if (currentMode == FEED_TOP) {
-        kp::intake::stop();
-        currentMode = STOPPED;
-      } else {
-        kp::intake::feed_top();
-        currentMode = FEED_TOP;
-      }
-    }
-
-    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
-      if (currentMode == SCORE) {
-        kp::intake::stop();
-        currentMode = STOPPED;
-      } else {
-        kp::intake::score();
-        currentMode = SCORE;
-      }
-    }
-
-    // --- Drive controls ---
-    #ifdef CONTROLLER_MOVEMENT
-    kp::chassis::track_dual_joystick(1.6, 1);
-    #endif
-
-    kp::controller::delay();
+  if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
+    kp::intake::pickup();     // hold to pickup
   }
+  else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+    kp::intake::outtake();    // hold to outtake
+  }
+  else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+    kp::intake::feed_top();   // hold to feed top
+  }
+  else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
+    kp::intake::score();      // hold to score
+  }
+  else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_X))
+  {
+    kp::intake::only();      // hold to run lower only
+  }
+  else {
+    kp::intake::stop();       // no button = stop
+  }
+
+  // --- Drive controls ---
+  #ifdef CONTROLLER_MOVEMENT
+  kp::chassis::track_dual_joystick(1.6, 1);
+  #endif
+
+  kp::controller::delay();
+}
 }
