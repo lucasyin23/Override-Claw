@@ -51,10 +51,9 @@
 #include "kp/park.hpp"
 #include "kp/intake.hpp"
 #include "kp/utility.hpp"
+#include "kp/wing.hpp"
 
 #include "automation/test.hpp"
-#include "automation/red.hpp"
-#include "automation/blue.hpp"
 
 
 /**

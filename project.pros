@@ -299,7 +299,7 @@
     },
     "upload_options": {
       "description": "2025-26 Push Back Bot 1",
-      "icon": "robot",
+      "icon": "pizza",
       "slot": 1
     },
     "use_early_access": false

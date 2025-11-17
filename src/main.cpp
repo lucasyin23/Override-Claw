@@ -12,7 +12,8 @@ void initialize() {
   kp::intake::initialize();
   
   
-  kp::automation::set("TEST", automation::test);
+  kp::automation::set("LEFT_SEVEN", automation::left_seven);
+  kp::automation::set("RIGHT_SEVEN", automation::left_seven);
 }
 
 void disabled() {}
@@ -35,28 +36,21 @@ void opcontrol() {
 
     LCD_MAIN_CLEAR
     LCD_1("# %s # %s", alliance, kp::automation::title())
-    LCD_2("X:BLUE / Y:RED ")
-    LCD_3("A:READY / B:RESET")
-    LCD_4("R1:ATM NEXT / R2:ATM PREPARE / DN:ATM TESTER")
+    LCD_2("A:READY / B:RESET")
+    LCD_3("R1:ATM NEXT / R2:ATM PREPARE / DN:ATM TESTER")
 
     kp::chassis::refresh_xy();
 
+    if (CTRL_PRESS_ONCE(LEFT)) {
+      kp::chassis::launch_angular_adjustment();
+    }
+
+     if (CTRL_PRESS_ONCE(RIGHT)) {
+      kp::chassis::launch_linear_adjustment();
+    }
+
     if (CTRL_PRESS_ONCE(DOWN)) {
       kp::automation::launch_selection();
-    }
-
-     if (CTRL_PRESS_ONCE(X)) {
-      alliance = "BLUE";
-      kp::automation::clear();
-
-      CTRL_VIBRATE(".")
-    }
-
-    if (CTRL_PRESS_ONCE(Y)) {
-      alliance = "RED";
-      kp::automation::clear();
-
-      CTRL_VIBRATE(".")
     }
 
     if (CTRL_PRESS_ONCE(R1)) {
@@ -80,7 +74,6 @@ void opcontrol() {
       CTRL_VIBRATE("-")
     }
 
-
     #ifdef CONTROLLER_MOVEMENT
     kp::chassis::track_dual_joystick(1.6, 1);
     #endif
@@ -92,35 +85,42 @@ void opcontrol() {
   LCD_MAIN_CLEAR
   LCD_1("# %s # %s", alliance, kp::automation::title())
 
-while (kp::controller::is_ready() == true) {
+  while (kp::controller::is_ready() == true) {
+    if (CTRL_PRESS_ONCE(B)) {
+      kp::matchload::toggle();
+    }
 
-  // --- Intake hold controls (NOT TOGGLE) ---
+    if (CTRL_PRESS_ONCE(Y)) {
+      kp::wing::toggle();
+    }
 
-  if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-    kp::intake::pickup();     // hold to pickup
-  }
-  else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-    kp::intake::outtake();    // hold to outtake
-  }
-  else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-    kp::intake::feed_top();   // hold to feed top
-  }
-  else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
-    kp::intake::score();      // hold to score
-  }
-  else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_X))
-  {
-    kp::intake::only();      // hold to run lower only
-  }
-  else {
-    kp::intake::stop();       // no button = stop
-  }
+    // Intake hold controls 
 
-  // --- Drive controls ---
-  #ifdef CONTROLLER_MOVEMENT
-  kp::chassis::track_dual_joystick(1.6, 1);
-  #endif
+    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
+      kp::intake::pickup();     // hold to pickup
+    }
+    else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+      kp::intake::outtake();    // hold to outtake
+    }
+    else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+      kp::intake::feed_top();   // hold to feed top
+    }
+    else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
+      kp::intake::score();      // hold to score
+    }
+    else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_X))
+    {
+      kp::intake::only();      // hold to run lower only
+    }
+    else {
+      kp::intake::stop();       // no button = stop
+    }
 
-  kp::controller::delay();
-}
+    // Drive controls 
+    #ifdef CONTROLLER_MOVEMENT
+    kp::chassis::track_dual_joystick(1.6, 1);
+    #endif
+
+    kp::controller::delay();
+  }
 }
