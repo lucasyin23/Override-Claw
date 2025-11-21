@@ -65,7 +65,7 @@ namespace kp::controller {
   }
 
   pros::Controller get_master() {
-    return master;
+    return master;  
   }
 
   void tank() {

@@ -1,13 +1,12 @@
-#ifndef _KP_PLOWER_H
-#define _KP_PLOWER_H
+#ifndef _KP_MATCHLOAD_H
+#define _KP_MATCHLOAD_H
 
 namespace kp::matchload {
     void toggle();
     void release();
     void retract();
+    void extend();
 
-    void bite();
-    void loosen();
 }
 
 #endif

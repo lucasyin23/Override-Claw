@@ -4,9 +4,9 @@ namespace kp::matchload {
     namespace {
         bool extended = false;
 
-        // One wire for extend, one wire for retract
-        pros::adi::Pneumatics extendSolenoid('d', false, false);
-        pros::adi::Pneumatics retractSolenoid('c', false, false);
+        // one wire for extend and one wire for retract
+        pros::adi::Pneumatics extendSolenoid('c', false, false);
+        pros::adi::Pneumatics retractSolenoid('d', false, false);
 
         void setPiston(bool extend) {
             if (extend) {
@@ -24,10 +24,10 @@ namespace kp::matchload {
             while (true) {
                 if (this_task.notify_take(true, TIMEOUT_MAX)) {
 
-                    // Toggle piston state
+                    // toggle piston state
                     extended = !extended;
 
-                    // Apply correct valve configuration
+                    // apply correct valve configuration
                     setPiston(extended);
                 }
 

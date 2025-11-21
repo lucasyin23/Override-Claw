@@ -11,9 +11,10 @@ void initialize() {
   kp::controller::initialize();
   kp::intake::initialize();
   
-  
-  kp::automation::set("LEFT_SEVEN", automation::left_seven);
-  kp::automation::set("RIGHT_SEVEN", automation::left_seven);
+  kp::automation::set("R7", automation::right_seven);
+  kp::automation::set("L7", automation::left_seven);
+  kp::automation::set("L43", automation::left_fourthree);
+  kp::automation::set("R43", automation::right_fourthree);
 }
 
 void disabled() {}
@@ -38,6 +39,7 @@ void opcontrol() {
     LCD_1("# %s # %s", alliance, kp::automation::title())
     LCD_2("A:READY / B:RESET")
     LCD_3("R1:ATM NEXT / R2:ATM PREPARE / DN:ATM TESTER")
+    LCD_4("LF:PID ANGLE / RT:PID LINEAR")
 
     kp::chassis::refresh_xy();
 
@@ -94,7 +96,7 @@ void opcontrol() {
       kp::wing::toggle();
     }
 
-    // Intake hold controls 
+    // itake hold controls 
 
     if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
       kp::intake::pickup();     // hold to pickup
@@ -108,7 +110,7 @@ void opcontrol() {
     else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
       kp::intake::score();      // hold to score
     }
-    else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_X))
+    else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN))
     {
       kp::intake::only();      // hold to run lower only
     }

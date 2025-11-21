@@ -4,7 +4,7 @@ namespace kp::wing {
     namespace {
         bool extended = false;
 
-        // One wire for extend, one wire for retract
+        // one wire for extend and one wire for retract
         pros::adi::Pneumatics extendSolenoid('a', false, false);
         pros::adi::Pneumatics retractSolenoid('b', false, false);
 
@@ -24,10 +24,10 @@ namespace kp::wing {
             while (true) {
                 if (this_task.notify_take(true, TIMEOUT_MAX)) {
 
-                    // Toggle piston state
+                    // toggle piston state
                     extended = !extended;
 
-                    // Apply correct valve configuration
+                    // apply correct valve configuration
                     setPiston(extended);
                 }
 
