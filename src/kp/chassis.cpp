@@ -6,23 +6,23 @@ namespace kp::chassis {
     pros::Controller master(pros::E_CONTROLLER_MASTER);
 
     // motor groups
-    pros::MotorGroup left_motors({-11, 12, -13}, pros::MotorGearset::blue); 
-    pros::MotorGroup right_motors({18, 19, -20}, pros::MotorGearset::blue); 
+    pros::MotorGroup left_motors({-11, -12, -13}, pros::MotorGearset::blue); 
+    pros::MotorGroup right_motors({18, 19, 20}, pros::MotorGearset::blue); 
 
-     // tracking wheels
+    // tracking wheels
     /* pros::Rotation horizontal_encoder(-9);
     pros::Rotation vertical_encoder(-10);
 
     lemlib::TrackingWheel horizontal(&horizontal_encoder, lemlib::Omniwheel::NEW_275, -3.25);
     lemlib::TrackingWheel vertical(&vertical_encoder, lemlib::Omniwheel::NEW_275, 0); */
-    
+
     // drivetrain settings
     lemlib::Drivetrain drivetrain(&left_motors, // left motor group
                                   &right_motors, // right motor group
                                   10.75, // track width
-                                  lemlib::Omniwheel::NEW_275,
+                                  lemlib::Omniwheel::NEW_325,
                                   450, // drivetrain rpm on the wheels
-                                  2 // horizontal drift is 2. If we had traction wheels, it would have been 8
+                                  8 // horizontal drift is 2. If we had traction wheels, it would have been 8
     );
 
     // angular motion controller
@@ -69,7 +69,7 @@ namespace kp::chassis {
                                       1.019 // expo curve gain
     );
 
-    lemlib::Chassis* chassis;
+      lemlib::Chassis* chassis;
 
     void angular_adjustment_fn(void* param) {
       kp::controller::short_delay();

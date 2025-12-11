@@ -13,8 +13,10 @@ void initialize() {
   
   kp::automation::set("R7", automation::right_seven);
   kp::automation::set("L7", automation::left_seven);
+  kp::automation::set("SAWP", automation::Solo_AWP);
   kp::automation::set("L43", automation::left_fourthree);
   kp::automation::set("R43", automation::right_fourthree);
+  kp::automation::set("SKILLS", automation::skills);
 }
 
 void disabled() {}
@@ -65,7 +67,7 @@ void opcontrol() {
       }
     }
 
-    if (CTRL_PRESS_ONCE(B)) {
+    if (CTRL_PRESS_ONCE(X)) {
       kp::chassis::reset();
       CTRL_VIBRATE(".")
     }
@@ -75,6 +77,15 @@ void opcontrol() {
       kp::controller::short_delay();
       CTRL_VIBRATE("-")
     }
+
+    if (CTRL_PRESS_ONCE(B)) {
+      kp::matchload::toggle();
+    }
+    
+    if (CTRL_PRESS_ONCE(Y)) {
+      kp::trapdoor::togglet();
+    }
+
 
     #ifdef CONTROLLER_MOVEMENT
     kp::chassis::track_dual_joystick(1.6, 1);
@@ -96,27 +107,42 @@ void opcontrol() {
       kp::wing::toggle();
     }
 
-    // itake hold controls 
+    if (CTRL_PRESS_ONCE(DOWN)) {
+      kp::trapdoor::togglet();
+    }
 
-    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-      kp::intake::pickup();     // hold to pickup
+    // intake controls 
+    static bool feedEnabled = false;
+    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
+      feedEnabled = !feedEnabled;  // toggle middle high goal score + pickup & trapdoor
+    if (feedEnabled) {
+      kp::intake::feed_top();     // turn intake feed ON
+      kp::trapdoor::togglet();   //  trapdoor toggles WITH feed
+    } else {
+      kp::intake::stop();        // turn intake feed OFF
+      kp::trapdoor::togglet();  //  trapdoor toggles back
     }
-    else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-      kp::intake::outtake();    // hold to outtake
     }
-    else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-      kp::intake::feed_top();   // hold to feed top
+    else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) { // pickup only
+      feedEnabled = false;
+      kp::intake::pickup();
     }
-    else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
-      kp::intake::score();      // hold to score
+    else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) { // outtake only
+      feedEnabled = false;
+      kp::intake::outtake();
     }
-    else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN))
-    {
-      kp::intake::only();      // hold to run lower only
+    else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) { // pickup + score
+      feedEnabled = false;
+      kp::intake::score();
     }
-    else {
-      kp::intake::stop();       // no button = stop
+    else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) { // slow outtake
+      feedEnabled = false;
+      kp::intake::slow();
     }
+    else if (!feedEnabled) { // stop intake
+      kp::intake::stop();
+    }
+    
 
     // Drive controls 
     #ifdef CONTROLLER_MOVEMENT

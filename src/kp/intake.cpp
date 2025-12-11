@@ -1,48 +1,41 @@
 #include "main.h" 
 #include <cmath> 
 namespace kp::intake {
-        pros::Motor lower_motor(1);
-        pros::Motor middle_motor(3);
+        pros::Motor lower_motor(3);
         pros::Motor scorer(2);
 
     void initialize() {
         lower_motor.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-        middle_motor.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
         scorer.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
     }
 
     void outtake() {
-        lower_motor.move(127);
-        middle_motor.move(-127);
-        scorer.move(0);
-    }
-
-    void feed_top() {
         lower_motor.move(-127);
-        middle_motor.move(127);
-        scorer.move(127);
-    }
-
-    void score() {
-        lower_motor.move(-127);
-        middle_motor.move(127);
         scorer.move(-127);
     }
 
-    void pickup() {
-        lower_motor.move(-127);
-        middle_motor.move(127);
+    void feed_top() {
+        lower_motor.move(127);
         scorer.move(0);
+    }
+
+    void score() {
+        lower_motor.move(127);
+        scorer.move(127);
+    }
+
+    void pickup() {
+        lower_motor.move(127);
+        scorer.move(-45);
     }
 
     void stop() {
         lower_motor.move(0);
-        middle_motor.move(0);
         scorer.move(0);
     }
-    void only() {
-        lower_motor.move(-127);
-        middle_motor.move(0);
-        scorer.move(0);
+
+    void slow () {
+        lower_motor.move(-60);
+        scorer.move(-60);
     }
 }

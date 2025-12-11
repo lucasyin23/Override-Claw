@@ -5,8 +5,8 @@ namespace kp::matchload {
         bool extended = false;
 
         // one wire for extend and one wire for retract
-        pros::adi::Pneumatics extendSolenoid('c', false, false);
-        pros::adi::Pneumatics retractSolenoid('d', false, false);
+        pros::adi::Pneumatics extendSolenoid('d', false, false);
+        pros::adi::Pneumatics retractSolenoid('c', false, false);
 
         void setPiston(bool extend) {
             if (extend) {

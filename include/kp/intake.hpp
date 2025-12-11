@@ -3,7 +3,6 @@
 
 namespace kp::intake {
     extern pros::Motor lower_motor;
-    extern pros::Motor middle_motor;
     extern pros::Motor scorer;
 
     void initialize();
@@ -11,6 +10,6 @@ namespace kp::intake {
     void feed_top();
     void score();
     void pickup();
-    void only();
     void stop();
+    void slow ();
 }
