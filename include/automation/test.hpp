@@ -1,4 +1,5 @@
 namespace automation {
+  void testing();
   void test();
   void left_seven();
   void right_seven();

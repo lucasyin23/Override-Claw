@@ -16,7 +16,7 @@ namespace kp::intake {
 
     void feed_top() {
         lower_motor.move(127);
-        scorer.move(0);
+        scorer.move(50);
     }
 
     void score() {
