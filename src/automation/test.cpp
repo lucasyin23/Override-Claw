@@ -1,69 +1,11 @@
-#include "kp/intake.hpp"
+#include "kp/matchload.hpp"
 #include "main.h"
 #include "pros/rtos.hpp"
 
 namespace automation {
     void test() {
-
     }
-    void testing(){
-                lemlib::Chassis *chassis = kp::chassis::get_chassis();
-        chassis->setPose(0, 0, 0);
-
-        // define positions
-        lemlib::Pose start_pose = lemlib::Pose(0, 0, 0);
-        lemlib::Pose first_blocks = lemlib::Pose(4.17, 19.74, 20.24);
-        lemlib::Pose other_blocks = lemlib::Pose(6.12, 26.41, 16.38);
-        lemlib::Pose long_goalpos = lemlib::Pose(32.03, 2.45, 180);
-        lemlib::Pose long_goal = lemlib::Pose(32.21, 19.39, 180);
-        lemlib::Pose matchload = lemlib::Pose(32.48, -10, 180);
-
-        // pick up middle 3 blocks
-            kp::matchload::toggle(); // bring down matchload mech
-            kp::intake::pickup(); // start intake
-            chassis->moveToPoint(first_blocks.x, first_blocks.y, 2000, {.maxSpeed = 70}); // move to block
-            chassis->waitUntilDone();
-            pros::delay(450);
-            chassis->moveToPoint(other_blocks.x, other_blocks.y, 2000,{.maxSpeed = 40}); // move to other blocks
-            chassis->waitUntilDone();
-            pros::delay(1000);
-
-        // move to in long goal
-            kp::intake::stop(); // stop intake
-            chassis->moveToPoint(long_goalpos.x, long_goalpos.y,4000, {.maxSpeed = 100}); // move to long goal position
-            chassis->waitUntilDone();
-            pros::delay(200);
-            chassis->turnToHeading(long_goalpos.theta,10000, {.minSpeed = 60}); // face towards long goal
-            chassis->waitUntilDone();
-            pros::delay(200);
-        
-        // score in long goal
-            chassis->moveToPoint(long_goal.x, long_goal.y,1000, {.forwards = false,.minSpeed = 40}); // back into long goal
-            chassis->waitUntilDone();
-            kp::intake::score(); // score on the long goal
-            pros::delay(1200);
-            chassis->waitUntilDone();
-
-        // pick up matchload
-            kp::intake::stop(); // stop intake
-            chassis->turnToHeading(matchload.theta, 2000, {.minSpeed = 40}); // move to matchload tubes
-            chassis->waitUntilDone();
-            kp::matchload::toggle(); // bring down matchload mech
-            kp::intake::pickup(); // start intake
-            chassis->moveToPoint(matchload.x, matchload.y, 3000, {.minSpeed = 40}); // move to matchload tubes
-            chassis->waitUntilDone();
-            pros::delay(500);
-
-        // score in long goal again
-            pros::delay(1000);
-            chassis->moveToPoint(long_goal.x, long_goal.y,500, {.forwards = false, .minSpeed = 40}); // back into long goal again
-            chassis->waitUntilDone();
-            pros::delay(500);
-            kp::intake::score(); // score on the long goal again
-            chassis->waitUntilDone();
-            pros::delay(2000);
-            kp::intake::stop(); // stop intake
-    }
+    
     void right_seven() {
         lemlib::Chassis *chassis = kp::chassis::get_chassis();
         chassis->setPose(0, 0, 0);
@@ -75,7 +17,7 @@ namespace automation {
         lemlib::Pose long_goalpos = lemlib::Pose(36, 2.51, 180);
         lemlib::Pose long_goal = lemlib::Pose(36, 26.51, 180);
         lemlib::Pose long_goal1 = lemlib::Pose(36, 33.51, 180);
-        lemlib::Pose matchload = lemlib::Pose(35, -6.67, 180);
+        lemlib::Pose matchload = lemlib::Pose(35, -8.0, 180);
         lemlib::Pose wingpos = lemlib::Pose(43.04, 30.70, 00);
         lemlib::Pose wing_control= lemlib::Pose(45.18, 42.84, 0);
 
@@ -241,22 +183,8 @@ namespace automation {
             pros::delay(200);
             chassis->moveToPoint(other_blocks.x, other_blocks.y, 5000,{.maxSpeed = 50}); // move to other blocks
             chassis->waitUntilDone();
-            pros::delay(100);
-            kp::intake::stop(); // stop intake
+            pros::delay(200);
 
-
-        // score in center high goal
-            chassis->moveToPoint(center_high.x, center_high.y,2000, {.forwards = false, .minSpeed = 50}); // move to center high goal
-            chassis->waitUntilDone();
-            chassis->turnToHeading(center_high.theta,2000, {.maxSpeed = 50}); // turn to center high goal
-            chassis->waitUntilDone();
-            kp::trapdoor::togglet(); // open trapdoor
-            pros::delay(300);
-            kp::intake::score(); // score on the center high goal
-            pros::delay(500);
-            kp::trapdoor::togglet(); // close trapdoor
-            kp::intake::pickup(); // pickup intake
-            
         // move to long goal pos
             kp::intake::stop(); // stop intake
             chassis->moveToPoint(long_goalpos.x, long_goalpos.y,4000, {.minSpeed = 10}); // move to long goal position
@@ -266,39 +194,33 @@ namespace automation {
             chassis->waitUntilDone();
             pros::delay(100);
 
+        // score in long goal
+            chassis->moveToPoint(long_goal.x, long_goal.y,500, {.forwards = false, .maxSpeed = 60}); // back into long goal again
+            chassis->waitUntilDone();
+            pros::delay(200);
+            kp::intake::score(); // score on the long goal again
+            chassis->waitUntilDone();
+            pros::delay(1500);
+            kp::intake::stop(); // stop intake  
+            kp::matchload::toggle(); // bring down matchload mec
+            pros::delay(200);
+
         // pick up matchload
-            kp::matchload::toggle(); // bring down matchload mech
             kp::intake::pickup(); // start intake
             chassis->moveToPoint(matchload.x, matchload.y, 3000, {.maxSpeed = 60}); // move to matchload tubes
             chassis->waitUntilDone();
-            pros::delay(150);
-
-        // score in long goal 
-            chassis->moveToPoint(long_goal1.x, long_goal1.y,500, {.forwards = false, .maxSpeed = 70}); // back into long goal again
-            chassis->waitUntilDone();
-            pros::delay(300);
-            kp::intake::score(); // score on the long goal again
-            chassis->waitUntilDone();
-            pros::delay(3000);
+            pros::delay(200);
+        
+        // score in center high goal
             kp::intake::stop(); // stop intake
-            chassis->moveToPoint(long_goalpos.x, long_goalpos.y,4000, {.minSpeed = 80}); // move to long goal position
+            chassis->moveToPoint(center_high.x, center_high.y,5000, {.minSpeed = 50}); // move to center low goal
+            chassis->turnToHeading(center_high.theta,5000, {.minSpeed = 50}); // turn to center low goal
             chassis->waitUntilDone();
-            chassis->moveToPoint(long_goal1.x, long_goal1.y,500, {.forwards = false, .minSpeed = 60}); // back into long goal again
-            chassis->waitUntilDone();
-
-        /*
-        // move to wing position
-            kp::matchload::toggle(); // bring up matchload mech
-            chassis->moveToPoint(wingpos.x,wingpos.y,5000, {.maxSpeed = 80});
-            chassis->waitUntilDone();
-            pros::delay(100);
-            chassis->turnToHeading(wingpos.theta,5000, {.minSpeed = 40});
-            chassis->waitUntilDone();
-            pros::delay(100);
-
-        // get long goal control
-            chassis->moveToPoint(wing_control.x,wing_control.y,5000, {.minSpeed = 60});
-            chassis->waitUntilDone();  */
+            kp::trapdoor::togglet(); // open trapdoor 
+            kp::intake::score(); // score on the center high goal
+            pros::delay(500);
+            kp::trapdoor::togglet(); // close trapdoor
+            kp::intake::pickup(); // pickup intake
     }
         
 
@@ -330,7 +252,7 @@ namespace automation {
         // score in center low goal
             kp::intake::stop(); // stop intake
             chassis->moveToPoint(center_low.x, center_low.y,5000, {.minSpeed = 50}); // move to center low goal
-                        chassis->turnToHeading(center_low.theta,5000, {.minSpeed = 50}); // turn to center low goal
+            chassis->turnToHeading(center_low.theta,5000, {.minSpeed = 50}); // turn to center low goal
             chassis->waitUntilDone();
             kp::intake::outtake(); // score on the center low goal
             chassis->waitUntilDone();
@@ -384,9 +306,9 @@ namespace automation {
         lemlib::Pose long_goalpos = lemlib::Pose(36, 2.51, 180);
         lemlib::Pose long_goal = lemlib::Pose(36, 26.51, 180);
         lemlib::Pose long_goal1 = lemlib::Pose(36, 33.51, 180);
-        lemlib::Pose matchload = lemlib::Pose(35, -6.67, 180);
-        lemlib::Pose parkzone_pos = lemlib::Pose(0, 0, 0);
-        lemlib::Pose parkzone = lemlib::Pose(0, 0, 0);
+        lemlib::Pose matchload = lemlib::Pose(35, -11.0, 180);
+        lemlib::Pose parkzone_pos = lemlib::Pose(-5, 13, 90);
+        lemlib::Pose parkzone = lemlib::Pose(-5, -50, 180);
 
         // pick up middle 3 blocks
             kp::intake::pickup(); // start intake
@@ -421,7 +343,7 @@ namespace automation {
             kp::intake::pickup(); // start intake
             chassis->moveToPoint(matchload.x, matchload.y, 3000, {.maxSpeed = 60}); // move to matchload tubes
             chassis->waitUntilDone();
-            pros::delay(150);
+            pros::delay(1000);
 
         // score in long goal 
             chassis->moveToPoint(long_goal1.x, long_goal1.y,500, {.forwards = false, .maxSpeed = 70}); // back into long goal again
@@ -429,7 +351,12 @@ namespace automation {
             pros::delay(300);
             kp::intake::score(); // score on the long goal again
             chassis->waitUntilDone();
-            pros::delay(3000);
+            pros::delay(6000);
+            chassis->moveToPoint(long_goalpos.x, long_goalpos.y,4000, {.minSpeed = 80}); // move to long goal position
+            chassis->waitUntilDone();
+            chassis->moveToPoint(long_goalpos.x, long_goalpos.y,4000, {.minSpeed = 10}); // move to long goal position
+            chassis->waitUntilDone();
+            kp::matchload::toggle();
 /*
         // define positions
         lemlib::Pose start_pose = lemlib::Pose(0, 0, 0);
@@ -514,7 +441,7 @@ namespace automation {
             chassis->waitUntilDone();
 
         // park in zone
-            chassis->moveToPoint(parkzone.x, parkzone.y,5000, {.minSpeed = 80});
+            chassis->moveToPoint(parkzone.x, parkzone.y,5000, {.minSpeed = 90});
     }
 
     void Solo_AWP() {

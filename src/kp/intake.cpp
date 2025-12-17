@@ -26,7 +26,7 @@ namespace kp::intake {
 
     void pickup() {
         lower_motor.move(127);
-        scorer.move(-45);
+        scorer.move(0);
     }
 
     void stop() {
