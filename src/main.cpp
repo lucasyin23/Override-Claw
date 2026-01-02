@@ -53,6 +53,10 @@ void opcontrol() {
       kp::chassis::launch_linear_adjustment();
     }
 
+    if (CTRL_PRESS_ONCE(UP)) {
+       kp::vision::launch_vision_tuner();
+    }
+    
     if (CTRL_PRESS_ONCE(DOWN)) {
       kp::automation::launch_selection();
     }

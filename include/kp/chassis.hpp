@@ -37,6 +37,6 @@ namespace kp::chassis {
 
   void move_gyro(double inch);
   void refresh_xy();
-
+  void set_tank_velocity(double left, double right);
 
 }

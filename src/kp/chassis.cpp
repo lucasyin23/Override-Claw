@@ -513,4 +513,9 @@ namespace kp::chassis {
   int get_vertical_raw() {
     return 0.0; // vertical_encoder.get_position();
   }
+
+  void set_tank_velocity(double left, double right) {
+        left_motors.move_velocity(left);
+        right_motors.move_velocity(right);
+    }
 }

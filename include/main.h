@@ -53,6 +53,7 @@
 #include "kp/utility.hpp"
 #include "kp/wing.hpp"
 #include "kp/trapdoor.hpp"
+#include "kp/vision.hpp"
 
 #include "automation/test.hpp"
 

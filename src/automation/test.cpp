@@ -1,4 +1,5 @@
 #include "kp/matchload.hpp"
+#include "kp/vision.hpp"
 #include "main.h"
 #include "pros/rtos.hpp"
 
@@ -6,6 +7,8 @@ namespace automation {
     void test() {
     }
     
+    // kp::vision::drive_straight_toward_goal(2000, true);
+
     void right_seven() {
         lemlib::Chassis *chassis = kp::chassis::get_chassis();
         chassis->setPose(0, 0, 0);
@@ -40,6 +43,7 @@ namespace automation {
             pros::delay(100);
 
         // score in long goal
+            kp::vision::drive_straight_toward_goal(2000, true); 
             chassis->moveToPoint(long_goal.x, long_goal.y,500, {.forwards = false, .maxSpeed = 60}); // back into long goal again
             chassis->waitUntilDone();
             pros::delay(200);
