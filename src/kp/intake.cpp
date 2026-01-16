@@ -35,7 +35,7 @@ namespace kp::intake {
     }
 
     void slow () {
-        lower_motor.move(-60);
-        scorer.move(-60);
+        lower_motor.move(80);
+        scorer.move(90);
     }
 }

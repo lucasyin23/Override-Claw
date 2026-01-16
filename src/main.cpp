@@ -11,11 +11,11 @@ void initialize() {
   kp::controller::initialize();
   kp::intake::initialize();
   
+  kp::automation::set("SAWP", automation::Solo_AWP);
   kp::automation::set("R7", automation::right_seven);
   kp::automation::set("L7", automation::left_seven);
   kp::automation::set("SAWP", automation::Solo_AWP);
   kp::automation::set("L43", automation::left_fourthree);
-  kp::automation::set("R43", automation::right_fourthree);
   kp::automation::set("SKILLS", automation::skills);
 }
 
@@ -45,6 +45,10 @@ void opcontrol() {
 
     kp::chassis::refresh_xy();
 
+    if (CTRL_PRESS_ONCE(UP)) {
+       kp::vision::launch_vision_tuner();
+    }
+
     if (CTRL_PRESS_ONCE(LEFT)) {
       kp::chassis::launch_angular_adjustment();
     }
@@ -53,9 +57,6 @@ void opcontrol() {
       kp::chassis::launch_linear_adjustment();
     }
 
-    if (CTRL_PRESS_ONCE(UP)) {
-       kp::vision::launch_vision_tuner();
-    }
     
     if (CTRL_PRESS_ONCE(DOWN)) {
       kp::automation::launch_selection();
