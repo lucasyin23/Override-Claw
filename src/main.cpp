@@ -14,7 +14,6 @@ void initialize() {
   kp::automation::set("SAWP", automation::Solo_AWP);
   kp::automation::set("R7", automation::right_seven);
   kp::automation::set("L7", automation::left_seven);
-  kp::automation::set("SAWP", automation::Solo_AWP);
   kp::automation::set("L43", automation::left_fourthree);
   kp::automation::set("SKILLS", automation::skills);
 }
@@ -88,7 +87,7 @@ void opcontrol() {
     }
     
     if (CTRL_PRESS_ONCE(Y)) {
-      kp::trapdoor::togglet();
+      kp::hood::togglet();
     }
 
 
@@ -113,39 +112,58 @@ void opcontrol() {
     }
 
     if (CTRL_PRESS_ONCE(DOWN)) {
-      kp::trapdoor::togglet();
+      kp::hood::togglet();
     }
 
     // intake controls 
-    static bool feedEnabled = false;
-    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
-      feedEnabled = !feedEnabled;  // toggle middle high goal score + pickup & trapdoor
-    if (feedEnabled) {
-      kp::intake::feed_top();     // turn intake feed ON
-      kp::trapdoor::togglet();   //  trapdoor toggles WITH feed
-    } else {
-      kp::intake::stop();        // turn intake feed OFF
-      kp::trapdoor::togglet();  //  trapdoor toggles back
+    static int intake_mode = 0; 
+    static bool hood_is_up = false;
+
+    // L1: Pickup
+    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)) {
+        if (intake_mode == 1) intake_mode = 0; 
+        else intake_mode = 1;                  
     }
+    // L2: Outtake
+    else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)) {
+        if (intake_mode == 2) intake_mode = 0;
+        else intake_mode = 2;
     }
-    else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) { // pickup only
-      feedEnabled = false;
-      kp::intake::pickup();
+    // R1:Scorer
+    else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
+        if (intake_mode == 3) intake_mode = 0;
+        else intake_mode = 3;
     }
-    else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) { // outtake only
-      feedEnabled = false;
-      kp::intake::outtake();
+    // R2: Middle Goal 
+    else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
+        if (intake_mode == 4) intake_mode = 0;
+        else intake_mode = 4;
     }
-    else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) { // pickup + score
-      feedEnabled = false;
-      kp::intake::score();
+
+    if (intake_mode == 1) { 
+        // MODE 1: PICKUP 
+        kp::intake::pickup();
+        if (hood_is_up == true) { kp::hood::togglet(); hood_is_up = false; }
     }
-    else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) { // slow outtake
-      feedEnabled = false;
-      kp::intake::slow();
+    else if (intake_mode == 2) { 
+        // MODE 2: OUTTAKE 
+        kp::intake::outtake();
+        if (hood_is_up == true) { kp::hood::togglet(); hood_is_up = false; }
     }
-    else if (!feedEnabled) { // stop intake
-      kp::intake::stop();
+    else if (intake_mode == 3) { 
+        // MODE 3: SCORER 
+        kp::intake::score();
+        if (hood_is_up == false) { kp::hood::togglet(); hood_is_up = true; }
+    }
+    else if (intake_mode == 4) { 
+        // MODE 4: MIDDLE GOAL
+        kp::intake::feed_top();
+        if (hood_is_up == true) { kp::hood::togglet(); hood_is_up = false; }
+    }
+    else { 
+        // MODE 0: STOP 
+        kp::intake::stop();
+        if (hood_is_up == true) { kp::hood::togglet(); hood_is_up = false; }
     }
     
 

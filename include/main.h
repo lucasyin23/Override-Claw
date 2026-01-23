@@ -52,7 +52,7 @@
 #include "kp/intake.hpp"
 #include "kp/utility.hpp"
 #include "kp/wing.hpp"
-#include "kp/trapdoor.hpp"
+#include "kp/hood.hpp"
 #include "kp/vision.hpp"
 
 #include "automation/test.hpp"

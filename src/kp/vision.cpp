@@ -6,7 +6,6 @@ namespace kp::vision {
     static double vision_kP = 0.5; 
     static double vision_kI = 0.0;
     static double vision_kD = 0.5;
-
     pros::Vision aivis(8, pros::E_VISION_ZERO_TOPLEFT);
     pros::vision_signature_s_t yellow = pros::Vision::signature_from_utility(
         1, 
