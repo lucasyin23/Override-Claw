@@ -13,13 +13,19 @@ namespace kp::intake {
     void outtake() {
         lower_motor.move(127);
         middle_motor.move(127);
-        scorer.move(0);
+        scorer.move(127);
     }
 
-    void feed_top() {
+    void mid() {
         lower_motor.move(-127);
         middle_motor.move(-127);
         scorer.move(127);
+    }
+
+    void slowmid() {
+        lower_motor.move(-127);
+        middle_motor.move(-115);
+        scorer.move(70);
     }
 
     void score() {
@@ -31,7 +37,7 @@ namespace kp::intake {
     void pickup() {
         lower_motor.move(-127);
         middle_motor.move(-127);
-        scorer.move(0);
+        scorer.move(-50);
     }
 
     void stop() {
@@ -39,9 +45,10 @@ namespace kp::intake {
         middle_motor.move(0);
         scorer.move(0);
     }
-    void only() {
-        lower_motor.move(-127);
-        middle_motor.move(0);
-        scorer.move(0);
+
+    void slowout() {
+        lower_motor.move(-100);
+        middle_motor.move(-110);
+        scorer.move(127);
     }
 }

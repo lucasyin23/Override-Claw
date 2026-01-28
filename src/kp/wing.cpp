@@ -2,10 +2,11 @@
 
 namespace kp::wing {
     namespace {
+        
         bool extended = false;
 
         // one wire for extend and one wire for retract
-        pros::adi::Pneumatics extendSolenoid('f', false, false);
+        pros::adi::Pneumatics extendSolenoid('b', false, false);
         pros::adi::Pneumatics retractSolenoid('e', false, false);
 
         void setPiston(bool extend) {

@@ -7,9 +7,11 @@ namespace kp::intake {
 
     void initialize();
     void outtake();
-    void feed_top();
+    void mid();
+    void slowmid();
     void score();
     void pickup();
     void stop();
-    void slow ();
+    void slowout ();
 }
+    

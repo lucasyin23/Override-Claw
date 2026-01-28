@@ -4,7 +4,7 @@ namespace kp::hood {
     
     bool open = false;
 
-    pros::adi::Pneumatics openSolenoid('g', false, false);
+    pros::adi::Pneumatics openSolenoid('a', false, false);
     // pros::adi::Pneumatics closeSolenoid('h', false, false);
 
     void setHood(bool state) {
