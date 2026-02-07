@@ -12,9 +12,11 @@ void initialize() {
   kp::intake::initialize();
   
   kp::automation::set("SAWP", automation::Solo_AWP);
-  kp::automation::set("R7", automation::right_seven);
-  kp::automation::set("L7", automation::left_seven);
-  kp::automation::set("L43", automation::left_fourthree);
+  kp::automation::set("7RIGHT", automation::right_seven);
+  kp::automation::set("ASAWP", automation::alt_SAWP);
+  kp::automation::set("7LEFT", automation::left_seven);
+  kp::automation::set("43LEFT", automation::left_fourthree);
+    kp::automation::set("43RIGHT", automation::right_fourthree);
   kp::automation::set("SKILLS", automation::skills);
 }
 
@@ -111,7 +113,7 @@ void opcontrol() {
       kp::wing::toggle();
     }
 
-    if (CTRL_PRESS_ONCE(UP)) {
+    if (CTRL_PRESS_ONCE(LEFT)) {
       kp::hood::togglet();
     }
 
@@ -139,8 +141,8 @@ void opcontrol() {
         if (intake_mode == 4) intake_mode = 0;
         else intake_mode = 4;
     }
-    // LEFT: SLow Outtake 
-    else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) {
+    // LEFT: Outtake 
+    else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
         if (intake_mode == 5) intake_mode = 0;
         else intake_mode = 5;
         if (hood_is_up == true) { kp::hood::togglet(); hood_is_up = false; }
@@ -165,7 +167,7 @@ void opcontrol() {
         if (hood_is_up == true) { kp::hood::togglet(); hood_is_up = false; }
     }
     else if (intake_mode == 2) { 
-        // MODE 2: UTAKE LOW GOAL
+        // MODE 2: OUTAKE LOW GOAL
         kp::intake::slowout();
         if (hood_is_up == true) { kp::hood::togglet(); hood_is_up = false; }
     }

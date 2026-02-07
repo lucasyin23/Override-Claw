@@ -26,9 +26,9 @@ namespace kp::chassis {
     );
 
     // angular motion controller
-    lemlib::ControllerSettings angular_controller(3.2, // proportional gain (kP)
+    lemlib::ControllerSettings angular_controller(2, // proportional gain (kP)
                                                 0, // integral gain (kI)
-                                                20, // derivative gain (kD)
+                                                8, // derivative gain (kD)
                                                 0, // anti windup
                                                 0.5, // small error ··range, in degrees
                                                 100, // small error range timeout, in milliseconds

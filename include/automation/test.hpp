@@ -7,4 +7,5 @@ namespace automation {
   void right_fourthree();
   void skills();
   void Solo_AWP();
+  void alt_SAWP();
 }
