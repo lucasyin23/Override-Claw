@@ -13,6 +13,7 @@ void initialize() {
   
   kp::automation::set("SAWP", automation::Solo_AWP);
   kp::automation::set("7RIGHT", automation::right_seven);
+  kp::automation::set("HSAWP", automation::Half_AWP);
   kp::automation::set("ASAWP", automation::alt_SAWP);
   kp::automation::set("7LEFT", automation::left_seven);
   kp::automation::set("43LEFT", automation::left_fourthree);
@@ -141,18 +142,6 @@ void opcontrol() {
         if (intake_mode == 4) intake_mode = 0;
         else intake_mode = 4;
     }
-    // LEFT: Outtake 
-    else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
-        if (intake_mode == 5) intake_mode = 0;
-        else intake_mode = 5;
-        if (hood_is_up == true) { kp::hood::togglet(); hood_is_up = false; }
-    }
-    // DOWN: Slow Middle Goal
-    else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
-        if (intake_mode == 6) intake_mode = 0;
-        else intake_mode = 6;
-        if (hood_is_up == true) { kp::hood::togglet(); hood_is_up = false; }
-    }
     // A: Stop
      else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
         if (intake_mode == 0) intake_mode = 0;
@@ -160,7 +149,7 @@ void opcontrol() {
         if (hood_is_up == true) { kp::hood::togglet(); hood_is_up = false; }
     }
 
-
+    
     if (intake_mode == 1) { 
         // MODE 1: PICKUP 
         kp::intake::pickup();
@@ -168,8 +157,8 @@ void opcontrol() {
     }
     else if (intake_mode == 2) { 
         // MODE 2: OUTAKE LOW GOAL
-        kp::intake::slowout();
-        if (hood_is_up == true) { kp::hood::togglet(); hood_is_up = false; }
+        kp::intake::outtake();
+        if (hood_is_up == true) { kp::hood::togglet(); hood_is_up = true; }
     }
     else if (intake_mode == 3) { 
         // MODE 3: SCORER 
@@ -179,16 +168,6 @@ void opcontrol() {
     else if (intake_mode == 4) { 
         // MODE 4: MIDDLE GOAL
         kp::intake::mid();
-        if (hood_is_up == true) { kp::hood::togglet(); hood_is_up = false; }
-    }
-    else if (intake_mode == 5) { 
-        // MODE 5: FAST OUTTAKE 
-          kp::intake::outtake();
-        if (hood_is_up == true) { kp::hood::togglet(); hood_is_up = false; }
-    }
-    else if (intake_mode == 6) { 
-        // MODE 6: Slow Middle Goal 
-          kp::intake::slowmid();
         if (hood_is_up == true) { kp::hood::togglet(); hood_is_up = false; }
     }
     else { 

@@ -8,10 +8,8 @@ namespace kp::intake {
     void initialize();
     void outtake();
     void mid();
-    void slowmid();
     void score();
     void pickup();
     void stop();
-    void slowout ();
 }
     

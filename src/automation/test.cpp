@@ -20,11 +20,11 @@ namespace automation {
         lemlib::Pose first_blocks = lemlib::Pose(4.06, 17.41,17.24);
         lemlib::Pose other_blocks = lemlib::Pose(4.44, 18.31, 26.94);
         lemlib::Pose long_goalpos = lemlib::Pose(36, 2.51, 180);
-        lemlib::Pose long_goal = lemlib::Pose(36, 26.51, 180);
-        lemlib::Pose matchload = lemlib::Pose(36, -13.5, 180);
+        lemlib::Pose long_goal = lemlib::Pose(36, 27.51, 180);
+        lemlib::Pose matchload = lemlib::Pose(36, -13.2, 180);
         lemlib::Pose long_goalpos1 = lemlib::Pose(36, 18, 180);
         lemlib::Pose wingpos = lemlib::Pose(28, 4.32, 180);
-        lemlib::Pose wing_control= lemlib::Pose(30, 40, 180);
+        lemlib::Pose wing_control= lemlib::Pose(31, 40, 180);
 
     // pick up middle 3 blocks
             kp::intake::pickup(); // start intake
@@ -47,7 +47,7 @@ namespace automation {
             pros::delay(200);
             chassis->moveToPoint(matchload.x, matchload.y, 1500, {.maxSpeed = 70}); // move to matchload tubes
             chassis->waitUntilDone();
-            pros::delay(200);
+            pros::delay(150);
 
         // score in long goal
             chassis->moveToPoint(long_goal.x, long_goal.y,800, {.forwards = false, .maxSpeed = 60}); // back into long goal again
@@ -56,7 +56,7 @@ namespace automation {
             pros::delay(200);
             kp::intake::score(); // score on the long goal 
             chassis->waitUntilDone();
-            pros::delay(1500);
+            pros::delay(2000);
             kp::intake::stop(); // stop intake  
             kp::matchload::toggle(); // bring up matchload mec
 
@@ -64,16 +64,16 @@ namespace automation {
         kp::wing::toggle(); // open wings
             chassis->moveToPoint(long_goalpos1.x, long_goalpos1.y,700, {.minSpeed = 80}); // move to long goal position
             chassis->waitUntilDone();
-            chassis->moveToPoint(wingpos.x,wingpos.y,1000, {.minSpeed = 70});
+            chassis->moveToPoint(wingpos.x,wingpos.y,1000, {.minSpeed = 50});
             chassis->waitUntilDone();
             chassis->turnToHeading(wingpos.theta,500, {.minSpeed = 40});
             chassis->waitUntilDone();
             kp::wing::toggle(); // close wings
 
         // get long goal control
-            chassis->moveToPoint(wing_control.x,wing_control.y,800, {.forwards = false, .minSpeed = 50});
+            chassis->moveToPoint(wing_control.x,wing_control.y,800, {.forwards = false, .maxSpeed = 50});
             chassis->waitUntilDone();  
-            chassis->turnToHeading(150,  250, {.minSpeed = 80});
+            chassis->turnToHeading(150,  250, {.minSpeed = 40});
             chassis->waitUntilDone();
     }
 
@@ -280,68 +280,40 @@ namespace automation {
 
         // define positions
         lemlib::Pose start_pose = lemlib::Pose(0, 0, 0);
-        lemlib::Pose rightmatchload = lemlib::Pose(20, 34, 90);
-        lemlib::Pose rightlong_goalpos = lemlib::Pose(0, 34, 90);
-        lemlib::Pose rightlong_goal = lemlib::Pose(-19, 34, 90);
-        lemlib::Pose rightfirst_blocks = lemlib::Pose(-17, 10, 227);
-        lemlib::Pose leftfirst_blocks = lemlib::Pose(-20, -34, 180);    
-        lemlib::Pose center_high = lemlib::Pose(-33, -25, 135);
-        lemlib::Pose leftlong_goalpos = lemlib::Pose(0, -57, 90);
-        lemlib::Pose leftlong_goal = lemlib::Pose(-19, -57, 90);
-        lemlib::Pose leftmatchload = lemlib::Pose(0, 0, 90);
-        lemlib::Pose park = lemlib::Pose(36, 18, 180);
+        lemlib::Pose leftclosematchload = lemlib::Pose(0, 0, -90);
+        lemlib::Pose leftclosegoalpos = lemlib::Pose(0, 31.57, -90);  
+        lemlib::Pose leftclosealley = lemlib::Pose(-0, 0, 90); 
+        lemlib::Pose leftfaralley = lemlib::Pose(-0, 0, 90); 
+        lemlib::Pose leftfargoalpos = lemlib::Pose(0, -0, 90);
+        lemlib::Pose leftlonggoal = lemlib::Pose(-0, -0, 90);
+        lemlib::Pose leftfarmatchload = lemlib::Pose(0, 0, 90);
+        lemlib::Pose farleftblocks = lemlib::Pose(0, 0, 0);
+        lemlib::Pose farrightblocks = lemlib::Pose(0, 0, 0);
+        lemlib::Pose center_high = lemlib::Pose(0, 0, 135);
+        lemlib::Pose rightfarmatchload = lemlib::Pose(0, 0, -90);
+        lemlib::Pose rightgoalpos = lemlib::Pose(-0, 0, -90);  
+        lemlib::Pose rightfarealley = lemlib::Pose(-0, 0, 90); 
+        lemlib::Pose rightclosealley = lemlib::Pose(-0, 0, 90); 
+        lemlib::Pose rightclosegoalpos = lemlib::Pose(0, 0, 90);
+        lemlib::Pose rightgoal = lemlib::Pose(-0, 0, 90);
+        lemlib::Pose rightclosematchload = lemlib::Pose(0, 0, 90);
+        lemlib::Pose closerightblocks = lemlib::Pose(0, 0, 0);
+        lemlib::Pose center_low = lemlib::Pose(0, 0, 45);
+        lemlib::Pose parkpos = lemlib::Pose(0, 0, -90);
+        lemlib::Pose parkzone = lemlib::Pose(0, 0, -90);
 
-        // pick up right side matchload
+        // pick up left side matchload
             kp::intake::pickup(); // start intake
-            chassis->moveToPoint(rightlong_goalpos.x, rightlong_goalpos.y,1400, {.minSpeed = 20}); // move to position 
+            chassis->moveToPoint(leftclosegoalpos.x, leftclosegoalpos.y,1400, {.minSpeed = 20}); // move to position 
             chassis->waitUntilDone();
-            chassis->turnToHeading(rightmatchload.theta, 1000, {.maxSpeed = 50}); // turn to matchload tubes
+            chassis->turnToHeading(leftclosematchload.theta, 1000, {.maxSpeed = 50}); // turn to matchload tubes
             chassis->waitUntilDone();
             kp::matchload::toggle(); // bring down matchload mech
-            pros::delay(100);
-            chassis->moveToPoint(rightmatchload.x, rightmatchload.y, 1500, {.minSpeed = 50}); // move to matchload tubes
-            chassis->waitUntilDone();
             pros::delay(200);
-
-        // score in right long goal
-            chassis->moveToPoint(rightlong_goal.x, rightlong_goal.y,1000, {.forwards = false, .maxSpeed = 70}); // back into long goal
+            chassis->moveToPoint(leftclosematchload.x, leftclosematchload.y, 1500, {.minSpeed = 50}); // move to matchload tubes
             chassis->waitUntilDone();
-            kp::hood::togglet(); // open hood
-            kp::intake::score(); // score on the long goal
-            pros::delay(1100);
-            kp::matchload::toggle(); // bring up matchload mech
-            kp::intake::stop(); // stop intake
-
-        // pick up right middle 3 blocks
-            chassis->moveToPoint(0,rightlong_goalpos.y ,1200, {.minSpeed = 50}); // move to position again
-            chassis->waitUntilDone();
-            kp::hood::togglet(); // close hood
-            pros::delay(100);
-            kp::intake::pickup(); // start intake
-            chassis->turnToHeading(225, 500, {.maxSpeed = 57}); // turn towards middle blocks
-            chassis->moveToPoint(rightfirst_blocks.x, rightfirst_blocks.y, 2000, {.minSpeed = 20}); // move to block
             pros::delay(500);
-            kp::matchload::toggle(); // bring down matchload mech
-            pros::delay(400);
-
-        // pick up left middle 3 blocks
-            kp::matchload::toggle(); // bring up matchload mech
-            chassis->turnToHeading(180, 500, {.maxSpeed = 57}); // turn towards left middle blocks
-            chassis->waitUntilDone();
-            chassis->moveToPoint(leftfirst_blocks.x, leftfirst_blocks.y, 1200, {.minSpeed = 50}); // move to block
-            pros::delay(900);
-            kp::matchload::toggle(); // bring down matchload mech
-
-        // score in Center High Goal
-            chassis->turnToHeading(center_high.theta,700, {.maxSpeed = 40}); // turn to center high goal
-            chassis->waitUntilDone();
-            chassis->moveToPoint(center_high.x, center_high.y,900, {.forwards = false,.maxSpeed = 50,}); // move to center high goal
-            chassis->waitUntilDone();
-            kp::intake::mid(); // score on the center high goal
-            pros::delay(500);
-            chassis->moveToPoint(leftfirst_blocks.x, leftfirst_blocks.y, 1000, { .minSpeed = 50}); 
-            chassis->waitUntilDone();
-
+        
     }
 
     void Solo_AWP() {
@@ -407,7 +379,9 @@ namespace automation {
             chassis->moveToPoint(center_high.x, center_high.y,900, {.forwards = false,.maxSpeed = 50,}); // move to center high goal
             chassis->waitUntilDone();
             kp::intake::mid(); // score on the center high goal
-            pros::delay(500);
+            pros::delay(1000);
+            kp::intake::stop();
+
 /*
         // pick up left side matchload
             chassis->moveToPoint(leftlong_goalpos.x, leftlong_goalpos.y, 1300, {.minSpeed = 40}); // move to position
@@ -500,4 +474,70 @@ namespace automation {
             kp::intake::mid(); // score on the center high goal
             pros::delay(200);
     }    
+
+    void Half_AWP() {
+        lemlib::Chassis *chassis = kp::chassis::get_chassis();
+        chassis->setPose(0, 0, 0);
+
+        // define positions
+        lemlib::Pose start_pose = lemlib::Pose(0, 0,0);
+        lemlib::Pose rightmatchload = lemlib::Pose(18, 32, 90);
+        lemlib::Pose rightlong_goalpos = lemlib::Pose(0, 32, 90);
+        lemlib::Pose rightlong_goal = lemlib::Pose(-19, 32, 90);
+        lemlib::Pose rightfirst_blocks = lemlib::Pose(-17, 10, 227);
+        lemlib::Pose leftfirst_blocks = lemlib::Pose(-20, -34, 180);    
+        lemlib::Pose center_high = lemlib::Pose(-33, -25, 135);
+        lemlib::Pose leftlong_goalpos = lemlib::Pose(0, -57, 90);
+        lemlib::Pose leftlong_goal = lemlib::Pose(-19, -57, 90);
+        lemlib::Pose leftmatchload = lemlib::Pose(0, 0, 90);
+
+        // pick up right side matchload
+            kp::intake::pickup(); // start intake
+            chassis->moveToPoint(rightlong_goalpos.x, rightlong_goalpos.y,1400, {.minSpeed = 20}); // move to position 
+            chassis->waitUntilDone();
+            chassis->turnToHeading(rightmatchload.theta, 1000, {.maxSpeed = 50}); // turn to matchload tubes
+            chassis->waitUntilDone();
+            kp::matchload::toggle(); // bring down matchload mech
+            pros::delay(200);
+            chassis->moveToPoint(rightmatchload.x, rightmatchload.y, 1500, {.minSpeed = 50}); // move to matchload tubes
+            chassis->waitUntilDone();
+            pros::delay(500);
+
+        // score in right long goal
+            chassis->moveToPoint(rightlong_goal.x, rightlong_goal.y,1000, {.forwards = false, .maxSpeed = 70}); // back into long goal
+            chassis->waitUntilDone();
+            kp::hood::togglet(); // open hood
+            kp::intake::score(); // score on the long goal
+            pros::delay(1100);
+            kp::matchload::toggle(); // bring up matchload mech
+            kp::intake::stop(); // stop intake
+
+        // pick up right middle 3 blocks
+            chassis->moveToPoint(0,rightlong_goalpos.y ,1200, {.minSpeed = 50}); // move to position again
+            chassis->waitUntilDone();
+            kp::hood::togglet(); // close hood
+            pros::delay(100);
+            kp::intake::pickup(); // start intake
+            chassis->turnToHeading(225, 500, {.maxSpeed = 57}); // turn towards middle blocks
+            chassis->moveToPoint(rightfirst_blocks.x, rightfirst_blocks.y, 2000, {.minSpeed = 20}); // move to block
+            pros::delay(500);
+            kp::matchload::toggle(); // bring down matchload mech
+            pros::delay(400);
+
+        // pick up left middle 3 blocks
+            kp::matchload::toggle(); // bring up matchload mech
+            chassis->turnToHeading(180, 500, {.maxSpeed = 57}); // turn towards left middle blocks
+            chassis->waitUntilDone();
+            chassis->moveToPoint(leftfirst_blocks.x, leftfirst_blocks.y, 1200, {.minSpeed = 50}); // move to block
+            pros::delay(900);
+            kp::matchload::toggle(); // bring down matchload mech
+
+        // score in Center High Goal
+            chassis->turnToHeading(center_high.theta,700, {.maxSpeed = 40}); // turn to center high goal
+            chassis->waitUntilDone();
+            chassis->moveToPoint(center_high.x, center_high.y,900, {.forwards = false,.maxSpeed = 50,}); // move to center high goal
+            chassis->waitUntilDone();
+            kp::intake::mid(); // score on the center high goal
+            pros::delay(500);
+    }
 }

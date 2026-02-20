@@ -8,4 +8,5 @@ namespace automation {
   void skills();
   void Solo_AWP();
   void alt_SAWP();
+  void Half_AWP();
 }
