@@ -1,8 +1,8 @@
 #include "main.h" 
 #include <cmath> 
 namespace kp::intake {
-        pros::Motor intake_motor(5);
-        pros::Motor scorer(1);
+        pros::Motor intake_motor(1);
+        pros::Motor scorer(2);
     void initialize() {
         intake_motor.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
         scorer.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
@@ -13,36 +13,36 @@ namespace kp::intake {
 
     void outtake() {
         scorer.set_current_limit(2500);
-        intake_motor.move(127);
+        intake_motor.move(-127);
         scorer.move(127);
     }
 
     void mid() {
         scorer.set_current_limit(2500);
-        intake_motor.move(-127);
-        scorer.move(127);
+        intake_motor.move(127);
+        scorer.move(-127);
     }
 
     void score() {
         scorer.set_current_limit(2500);
-        intake_motor.move(-127);
+        intake_motor.move(127);
         scorer.move(-127);
     }
 
     void pickup() {
         scorer.set_current_limit(2500);
-        intake_motor.move(-127);
+        intake_motor.move(127);
         scorer.move(-127);
     }
 
     void stop() {
-        lower_motor.move(0);
+        intake_motor.move(0);
         scorer.move(0);
     }
 
     void slowout() {
         scorer.set_current_limit(2500);
-        intake_motor.move(100);
+        intake_motor.move(-100);
         scorer.move(127);
     }
 }
