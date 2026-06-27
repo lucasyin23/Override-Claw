@@ -2,12 +2,12 @@
 
 namespace kp::chassis {
   namespace {
-    pros::Imu imu(4);
+    pros::Imu imu(3);
     pros::Controller master(pros::E_CONTROLLER_MASTER);
 
     // motor groups
     pros::MotorGroup left_motors({-11, -12, -13}, pros::MotorGearset::blue); 
-    pros::MotorGroup right_motors({18, 19, 10}, pros::MotorGearset::blue); 
+    pros::MotorGroup right_motors({18, 19, 20}, pros::MotorGearset::blue); 
 
     // tracking wheels
     /* pros::Rotation horizontal_encoder(-9);
@@ -26,9 +26,9 @@ namespace kp::chassis {
     );
 
     // angular motion controller
-    lemlib::ControllerSettings angular_controller(2, // proportional gain (kP)
+    lemlib::ControllerSettings angular_controller(1.98, // proportional gain (kP)
                                                 0, // integral gain (kI)
-                                                8, // derivative gain (kD)
+                                                9, // derivative gain (kD)
                                                 0, // anti windup
                                                 0.5, // small error ··range, in degrees
                                                 100, // small error range timeout, in milliseconds

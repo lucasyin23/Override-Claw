@@ -11,14 +11,16 @@ void initialize() {
   kp::controller::initialize();
   kp::intake::initialize();
   
-  kp::automation::set("SAWP", automation::Solo_AWP);
   kp::automation::set("7RIGHT", automation::right_seven);
-  kp::automation::set("HSAWP", automation::Half_AWP);
-  kp::automation::set("ASAWP", automation::alt_SAWP);
-  kp::automation::set("7LEFT", automation::left_seven);
-  kp::automation::set("43LEFT", automation::left_fourthree);
-    kp::automation::set("43RIGHT", automation::right_fourthree);
-  kp::automation::set("SKILLS", automation::skills);
+  kp::automation::set("4RIGHT", automation::right_fourthree);
+  kp::automation::set("4LEFT", automation::left_fourthree);
+ //  kp::automation::set("TUFFAWP", automation::alt_SAWP);
+  // kp::automation::set("SAWP", automation::Solo_AWP);
+  // kp::automation::set("HSAWP", automation::Half_AWP);
+  // kp::automation::set("7LEFT", automation::left_seven);
+  // kp::automation::set("4LEFT", automation::left_fourthree);
+  // kp::automation::set("SKILLS", automation::skills);
+  kp::automation::set("drive", automation::drive);
 }
 
 void disabled() {}
@@ -27,7 +29,7 @@ void competition_initialize() {}
 
 void autonomous() {
   kp::automation::run();
-}
+} 
 
 void opcontrol() {
   lemlib::Chassis *chassis = kp::chassis::get_chassis();
@@ -158,17 +160,17 @@ void opcontrol() {
     else if (intake_mode == 2) { 
         // MODE 2: OUTAKE LOW GOAL
         kp::intake::outtake();
-        if (hood_is_up == true) { kp::hood::togglet(); hood_is_up = true; }
+        if (hood_is_up == true) { kp::hood::togglet(); hood_is_up = false; }
     }
     else if (intake_mode == 3) { 
         // MODE 3: SCORER 
         kp::intake::score();
-        if (hood_is_up == false) { kp::hood::togglet(); hood_is_up = true; }
+        if (hood_is_up == true) { kp::hood::togglet(); hood_is_up = false; }
     }
     else if (intake_mode == 4) { 
         // MODE 4: MIDDLE GOAL
         kp::intake::mid();
-        if (hood_is_up == true) { kp::hood::togglet(); hood_is_up = false; }
+        if (hood_is_up == false) { kp::hood::togglet(); hood_is_up = true; }
     }
     else { 
         // MODE 0: STOP 
@@ -179,7 +181,7 @@ void opcontrol() {
 
     // Drive controls 
     #ifdef CONTROLLER_MOVEMENT
-    kp::chassis::track_dual_joystick(1.6, 1);
+    kp::chassis::track_dual_joystick(1  , 1);
     #endif
 
     kp::controller::delay();

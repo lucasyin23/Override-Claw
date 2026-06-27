@@ -20,7 +20,7 @@ namespace kp::intake {
     void mid() {
         scorer.set_current_limit(2500);
         intake_motor.move(127);
-        scorer.move(-127);
+        scorer.move(-70);
     }
 
     void score() {
@@ -30,9 +30,9 @@ namespace kp::intake {
     }
 
     void pickup() {
-        scorer.set_current_limit(2500);
+        scorer.set_current_limit(400);
         intake_motor.move(127);
-        scorer.move(-127);
+        scorer.move(0);
     }
 
     void stop() {
