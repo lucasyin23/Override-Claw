@@ -11,16 +11,8 @@ void initialize() {
   kp::controller::initialize();
   kp::intake::initialize();
   
-  kp::automation::set("7RIGHT", automation::right_seven);
-  kp::automation::set("4RIGHT", automation::right_fourthree);
-  kp::automation::set("4LEFT", automation::left_fourthree);
- //  kp::automation::set("TUFFAWP", automation::alt_SAWP);
-  // kp::automation::set("SAWP", automation::Solo_AWP);
-  // kp::automation::set("HSAWP", automation::Half_AWP);
-  // kp::automation::set("7LEFT", automation::left_seven);
-  // kp::automation::set("4LEFT", automation::left_fourthree);
-  // kp::automation::set("SKILLS", automation::skills);
-  kp::automation::set("drive", automation::drive);
+
+ kp::automation::set("drive", automation::drive);
 }
 
 void disabled() {}
@@ -87,13 +79,6 @@ void opcontrol() {
       CTRL_VIBRATE("-")
     }
 
-    if (CTRL_PRESS_ONCE(Y)) {
-      kp::matchload::toggle();
-    }
-    
-    if (CTRL_PRESS_ONCE(B)) {
-      kp::hood::togglet();
-    }
 
 
     #ifdef CONTROLLER_MOVEMENT
@@ -108,77 +93,19 @@ void opcontrol() {
   LCD_1("# %s # %s", alliance, kp::automation::title())
 
   while (kp::controller::is_ready() == true) {
-    if (CTRL_PRESS_ONCE(Y)) {
-      kp::matchload::toggle();
-    }
 
-    if (CTRL_PRESS_ONCE(B)) {
-      kp::wing::toggle();
-    }
+int lift_raw = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
 
-    if (CTRL_PRESS_ONCE(LEFT)) {
-      kp::hood::togglet();
-    }
+    // Invert axis: Left gives negative values -> multiply by -1 to send positive power (UP)
+    // Right gives positive values -> multiply by -1 to send negative power (DOWN)
+    int lift_power = -lift_raw;
 
-    // intake controls 
-    static int intake_mode = 0; 
-    static bool hood_is_up = false;
-
-    // L1: Pickup
-    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)) {
-        if (intake_mode == 1) intake_mode = 0; 
-        else intake_mode = 1;                  
-    }
-    // L2: Outtake
-    else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)) {
-        if (intake_mode == 2) intake_mode = 0;
-        else intake_mode = 2;
-    }
-    // R1:Scorer
-    else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
-        if (intake_mode == 3) intake_mode = 0;
-        else intake_mode = 3;
-    }
-    // R2: Middle Goal 
-    else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
-        if (intake_mode == 4) intake_mode = 0;
-        else intake_mode = 4;
-    }
-    // A: Stop
-     else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
-        if (intake_mode == 0) intake_mode = 0;
-        else intake_mode = 0;
-        if (hood_is_up == true) { kp::hood::togglet(); hood_is_up = false; }
-    }
-
-    
-    if (intake_mode == 1) { 
-        // MODE 1: PICKUP 
-        kp::intake::pickup();
-        if (hood_is_up == true) { kp::hood::togglet(); hood_is_up = false; }
-    }
-    else if (intake_mode == 2) { 
-        // MODE 2: OUTAKE LOW GOAL
-        kp::intake::outtake();
-        if (hood_is_up == true) { kp::hood::togglet(); hood_is_up = false; }
-    }
-    else if (intake_mode == 3) { 
-        // MODE 3: SCORER 
-        kp::intake::score();
-        if (hood_is_up == true) { kp::hood::togglet(); hood_is_up = false; }
-    }
-    else if (intake_mode == 4) { 
-        // MODE 4: MIDDLE GOAL
-        kp::intake::mid();
-        if (hood_is_up == false) { kp::hood::togglet(); hood_is_up = true; }
-    }
-    else { 
-        // MODE 0: STOP 
-        kp::intake::stop();
-        if (hood_is_up == true) { kp::hood::togglet(); hood_is_up = false; }
+    if (std::abs(lift_raw) > 10) {
+      kp::lift::set_power(lift_power);
+    } else {
+      kp::lift::brake();
     }
     
-
     // Drive controls 
     #ifdef CONTROLLER_MOVEMENT
     kp::chassis::track_dual_joystick(1  , 1);

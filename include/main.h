@@ -43,16 +43,12 @@
 
 #include "math.h"
 #include "lemlib/api.hpp"
-
+#include "kp/lift.hpp"
 #include "kp/automation.hpp"
 #include "kp/controller.hpp"
 #include "kp/chassis.hpp"
-#include "kp/matchload.hpp"
-#include "kp/park.hpp"
 #include "kp/intake.hpp"
 #include "kp/utility.hpp"
-#include "kp/wing.hpp"
-#include "kp/hood.hpp"
 #include "kp/vision.hpp"
 
 #include "automation/test.hpp"
