@@ -6,8 +6,8 @@ namespace kp::chassis {
     pros::Controller master(pros::E_CONTROLLER_MASTER);
 
     // motor groups
-    pros::MotorGroup left_motors({-11, -12}, pros::MotorGearset::blue); 
-    pros::MotorGroup right_motors({18, 19}, pros::MotorGearset::blue); 
+    pros::MotorGroup left_motors({-15, 16}, pros::MotorGearset::blue); 
+    pros::MotorGroup right_motors({13, -14}, pros::MotorGearset::blue); 
 
     // tracking wheels
     /* pros::Rotation horizontal_encoder(-9);

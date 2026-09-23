@@ -44,6 +44,8 @@
 #include "math.h"
 #include "lemlib/api.hpp"
 #include "kp/lift.hpp"
+#include "kp/arm.hpp"
+#include "kp/armtake.hpp"
 #include "kp/automation.hpp"
 #include "kp/controller.hpp"
 #include "kp/chassis.hpp"

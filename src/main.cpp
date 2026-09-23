@@ -11,7 +11,8 @@ void initialize() {
   kp::chassis::initialize();
   kp::controller::initialize();
   kp::intake::initialize();
-  
+  kp::arm::initialize();
+  kp::armtake::initialize();
 
  kp::automation::set("drive", automation::drive);
 }
@@ -94,19 +95,27 @@ void opcontrol() {
   LCD_1("# %s # %s", alliance, kp::automation::title())
 
   while (kp::controller::is_ready() == true) {
+    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
+      kp::lift::set_power(127);  // Powers up off the switch
+  } else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+      kp::lift::set_power(-127); // Drives down until it strikes switch
+  } else {
+      kp::lift::brake();         // Cuts power at bottom, locks hold if mid-air
+  }
 
-int lift_raw = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+  if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
+      kp::arm::set_power(90);   // Arm goes UP
+  } else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+      kp::arm::set_power(-90);  // Arm goes DOWN
+  } else {
+      kp::arm::brake();          // Latches and locks height
+  }
 
-    // Invert axis: Left gives negative values -> multiply by -1 to send positive power (UP)
-    // Right gives positive values -> multiply by -1 to send negative power (DOWN)
-    int lift_power = -lift_raw;
-
-    if (std::abs(lift_raw) > 10) {
-      kp::lift::set_power(lift_power);
-    } else {
-      kp::lift::brake();
-    }
-    
+  if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
+      kp::armtake::toggle_intake();
+  } else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
+      kp::armtake::toggle_outtake();
+  }
     // Drive controls 
     #ifdef CONTROLLER_MOVEMENT
     kp::chassis::track_dual_joystick(1  , 1);
