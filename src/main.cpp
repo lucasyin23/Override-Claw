@@ -116,6 +116,10 @@ void opcontrol() {
   } else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
       kp::armtake::toggle_outtake();
   }
+
+  if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
+    kp::lift::home();
+  }
     // Drive controls 
     #ifdef CONTROLLER_MOVEMENT
     kp::chassis::track_dual_joystick(1  , 1);
