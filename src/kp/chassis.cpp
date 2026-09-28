@@ -10,11 +10,11 @@ namespace kp::chassis {
     pros::MotorGroup right_motors({13, -14}, pros::MotorGearset::blue); 
 
     // tracking wheels
-    /* pros::Rotation horizontal_encoder(-9);
+    pros::Rotation horizontal_encoder(-9);
     pros::Rotation vertical_encoder(-10);
 
     lemlib::TrackingWheel horizontal(&horizontal_encoder, lemlib::Omniwheel::NEW_275, -3.25);
-    lemlib::TrackingWheel vertical(&vertical_encoder, lemlib::Omniwheel::NEW_275, 0); */
+    lemlib::TrackingWheel vertical(&vertical_encoder, lemlib::Omniwheel::NEW_275, 0); 
 
     // drivetrain settings
     lemlib::Drivetrain drivetrain(&left_motors, // left motor group
@@ -50,9 +50,9 @@ namespace kp::chassis {
     );
 
     // sensors for odometry
-    lemlib::OdomSensors sensors(nullptr, // vertical tracking wheel dont have
+    lemlib::OdomSensors sensors(&vertical, // vertical tracking wheel dont have
                                 nullptr, // vertical tracking wheel 2, set to nullptr as we don't have a second one
-                                nullptr, // horizontal tracking wheel dont have
+                                &horizontal, // horizontal tracking wheel dont have
                                 nullptr, // horizontal tracking wheel 2, set to nullptr as we don't have a second one
                                 &imu // inertial sensor
     );
@@ -456,7 +456,7 @@ namespace kp::chassis {
     move_by_time(0, 0 - abs(voltage));
   }
   void move_gyro(double inch) {
-    //     lemlib::Omniwheel::NEW_275 * M_PI * ((double)vertical_encoder.get_position() / 100.00 / 360.0);
+    lemlib::Omniwheel::NEW_275 * M_PI * ((double)vertical_encoder.get_position() / 100.00 / 360.0);
     _move_gyro(get_position() + inch);
 }
   double get_left_velocity() {
@@ -507,11 +507,11 @@ namespace kp::chassis {
   }
 
   float get_vertical_traveled() {
-    return 0.0; // vertical.getDistanceTraveled();
+    return vertical.getDistanceTraveled();
   }
 
   int get_vertical_raw() {
-    return 0.0; // vertical_encoder.get_position();
+    return vertical_encoder.get_position();
   }
 
   void set_tank_velocity(double left, double right) {

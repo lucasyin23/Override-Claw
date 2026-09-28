@@ -1,48 +1,54 @@
-#include "main.h" 
-#include <cmath> 
+#include "main.h"
+
 namespace kp::intake {
-        pros::Motor intake_motor(1);
-        pros::Motor scorer(2);
+    // 11W blue motor on Port 12 (600 RPM)
+    pros::Motor intake_motor(12, pros::MotorGearset::blue);
+
+    const int INTAKE_SPEED = 127;
+
+    // 0: stopped, 1: intaking, -1: outtaking
+    static int current_state = 0;
+
     void initialize() {
         intake_motor.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-        scorer.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-
-        intake_motor.set_current_limit(2500);
-        scorer.set_current_limit(2500);
-    }
-
-    void outtake() {
-        scorer.set_current_limit(2500);
-        intake_motor.move(-127);
-        scorer.move(127);
-    }
-
-    void mid() {
-        scorer.set_current_limit(2500);
-        intake_motor.move(127);
-        scorer.move(-70);
-    }
-
-    void score() {
-        scorer.set_current_limit(2500);
-        intake_motor.move(127);
-        scorer.move(-127);
-    }
-
-    void pickup() {
-        scorer.set_current_limit(400);
-        intake_motor.move(127);
-        scorer.move(0);
-    }
-
-    void stop() {
         intake_motor.move(0);
-        scorer.move(0);
+        current_state = 0;
     }
 
-    void slowout() {
-        scorer.set_current_limit(2500);
-        intake_motor.move(-100);
-        scorer.move(127);
+    // Stops both lower intake and armtake
+    void stop() {
+        current_state = 0;
+        intake_motor.move(0);
+        kp::armtake::stop();
+    }
+
+    // Stops ONLY Motor 12 (used by R1/R2 macros)
+    void stop_intake_only() {
+        current_state = 0;
+        intake_motor.move(0);
+    }
+
+    void tintake() {
+        if (current_state == 1) {
+            stop(); // Pressing again shuts both off
+        } else {
+            current_state = 1;
+            intake_motor.move(INTAKE_SPEED); // 100% max forward speed
+            kp::armtake::intake();
+        }
+    }
+
+    void touttake() {
+        if (current_state == -1) {
+            stop(); // Pressing again shuts both off
+        } else {
+            current_state = -1;
+            intake_motor.move(-INTAKE_SPEED); // 100% max reverse speed
+            kp::armtake::outtake();
+        }
+    }
+
+    bool is_running() {
+        return current_state != 0;
     }
 }
