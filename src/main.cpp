@@ -8,7 +8,6 @@ void initialize() {
     pros::lcd::initialize();
     kp::chassis::initialize();
     kp::controller::initialize();
-    kp::arm::initialize();
     kp::lift::initialize();
 
     kp::automation::set("drive", automation::drive);
