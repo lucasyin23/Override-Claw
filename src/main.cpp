@@ -8,10 +8,8 @@ void initialize() {
     pros::lcd::initialize();
     kp::chassis::initialize();
     kp::controller::initialize();
-    kp::intake::initialize();
     kp::arm::initialize();
     kp::lift::initialize();
-    kp::armtake::initialize();
 
     kp::automation::set("drive", automation::drive);
 }
@@ -93,58 +91,17 @@ void opcontrol() {
     while (kp::controller::is_ready() == true) {
         // Lift Controls
         if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-            kp::macro::stop();
             kp::lift::set_power(127);
         } 
         else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-            kp::macro::stop();
             kp::lift::set_power(-127);
         } 
-        else if (!kp::macro::is_active() && !kp::lift::is_homing()) {
+        else if (!kp::lift::is_homing()) {
             kp::lift::brake();
-        }
-
-        // Arm & Macro Controls
-        if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
-            kp::intake::stop_intake_only();
-            kp::macro::score();
-        }
-        else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-            kp::intake::stop_intake_only();
-            kp::macro::stop();
-            kp::armtake::stop();
-            kp::arm::set_power(55);
-        } 
-        else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
-            kp::intake::stop_intake_only();
-            kp::macro::stop();
-            kp::arm::set_power(-55);
-        }
-        else if (!kp::macro::is_active()) {
-            kp::arm::brake();
-        }
-
-        // Armtake Solo Toggles
-        if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
-            kp::armtake::toggle_outtake();
-        }
-        else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
-            kp::armtake::toggle_intake();
-        }
-
-        // Combined Intake + Armtake Toggles
-        else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y)) {
-            kp::intake::tintake();
-        }
-        else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
-            kp::intake::touttake();
         }
 
         // Homing Reset
         if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X)) {
-            kp::macro::stop();
-            kp::armtake::stop();
-            kp::intake::stop();
             kp::lift::home(); // Runs in background task, does not freeze controls
         }
 
