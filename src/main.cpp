@@ -118,7 +118,6 @@ void opcontrol() {
         else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
             kp::intake::stop_intake_only();
             kp::macro::stop();
-            kp::armtake::stop();
             kp::arm::set_power(-55);
         }
         else if (!kp::macro::is_active()) {
