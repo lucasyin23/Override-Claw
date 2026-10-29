@@ -88,6 +88,11 @@ void opcontrol() {
     LCD_1("# %s # %s", alliance, kp::automation::title())
 
     while (kp::controller::is_ready() == true) {
+
+        if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)) {
+            kp::claw::toggle();
+        }
+
         // Lift Controls
         if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
             kp::lift::set_power(127);
@@ -105,8 +110,6 @@ void opcontrol() {
         }
 
         // Safety & Drive Controls
-        kp::arm::update();
-
         #ifdef CONTROLLER_MOVEMENT
         kp::chassis::track_dual_joystick(1, 1);
         #endif

@@ -47,6 +47,7 @@
 #include "kp/automation.hpp"
 #include "kp/controller.hpp"
 #include "kp/chassis.hpp"
+#include "kp/claw.hpp"
 #include "kp/utility.hpp"
 #include "kp/vision.hpp"
 
