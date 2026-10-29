@@ -50,6 +50,7 @@
 #include "kp/claw.hpp"
 #include "kp/utility.hpp"
 #include "kp/vision.hpp"
+#include "kp/toggle.hpp"
 
 #include "automation/test.hpp"
 

@@ -89,9 +89,15 @@ void opcontrol() {
 
     while (kp::controller::is_ready() == true) {
 
-        if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)) {
+        if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
             kp::claw::toggle();
         }
+
+        if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
+            kp::claw::toggle();
+            
+        }
+       }
 
         // Lift Controls
         if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
@@ -116,4 +122,3 @@ void opcontrol() {
         
         kp::controller::delay();
     }
-}

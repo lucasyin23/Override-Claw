@@ -4,7 +4,7 @@ namespace kp::claw {
     namespace {
         bool extended = false;
 
-        pros::adi::Pneumatics clawPiston('a', false);
+        pros::adi::Pneumatics clawPiston('b', false);
 
         void task_fn() {
             pros::Task this_task = pros::Task::current();
@@ -24,6 +24,7 @@ namespace kp::claw {
 
         pros::Task task(task_fn, "CLAW_PISTON_TASK");
     }
+    
 
     void toggle() {
         task.notify();

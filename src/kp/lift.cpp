@@ -1,11 +1,11 @@
 #include "main.h"
 
 namespace kp::lift {
-    // Lift motor group: dual blue 600 RPM motors (port 18 forward, port 20 reversed)
-    pros::MotorGroup lift_motors({18, -20}, pros::MotorGearset::blue, pros::MotorUnits::degrees);
+    // Lift motor group: motors 9, 10 (forward) and motor 2 (reversed), blue 600 RPM gearset
+    pros::MotorGroup lift_motors({9, 10, -2}, pros::MotorGearset::blue, pros::MotorUnits::degrees);
 
-    // Limit switch on 3-Wire ADI port 'H'
-    pros::adi::DigitalIn limit_switch('H');
+    // Limit switch on 3-Wire ADI port 'A'
+    pros::adi::DigitalIn limit_switch('A');
 
     static double hold_target = 0.0;
     static bool is_holding = false;
@@ -14,6 +14,8 @@ namespace kp::lift {
 
     void initialize() {
         lift_motors.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+        // Set current limit to 2500 mA (100% of maximum V5 motor current for full torque)
+        lift_motors.set_current_limit(2500);
         lift_motors.move_voltage(0);
         lift_motors.tare_position();
         hold_target = 0.0;
@@ -48,8 +50,14 @@ namespace kp::lift {
             return;
         }
 
-        // Scale joystick value (-127 to 127) to mV (-12000 to 12000)
-        int voltage = (input * 12000) / 127;
+        // Scale joystick value: up is capped at 85% speed (10200 mV), down matches homing speed (-3500 mV)
+        int voltage = 0;
+        if (input > 0) {
+            voltage = (input * 10200) / 127;
+        } else if (input < 0) {
+            voltage = (input * 3500) / 127;
+        }
+
         lift_motors.move_voltage(voltage);
     }
 
@@ -74,7 +82,7 @@ namespace kp::lift {
 
     static void home_worker() {
         uint32_t start_time = pros::millis();
-        const uint32_t timeout_ms = 2500;
+        const uint32_t timeout_ms = 3500;
 
         // If already resting on bottom limit switch, zero and exit immediately
         if (is_bottom()) {
@@ -87,9 +95,9 @@ namespace kp::lift {
             return;
         }
 
-        // Drive lift down until limit switch triggers or timeout expires
+        // Drive lift down slowly until limit switch triggers or timeout expires
         while (!is_bottom() && (pros::millis() - start_time < timeout_ms)) {
-            lift_motors.move_voltage(-7000);
+            lift_motors.move_voltage(-3500);
             pros::delay(10);
         }
 
