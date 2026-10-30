@@ -9,7 +9,6 @@ void initialize() {
     kp::chassis::initialize();
     kp::controller::initialize();
     kp::lift::initialize();
-
     kp::automation::set("drive", automation::drive);
 }
 
@@ -95,9 +94,11 @@ void opcontrol() {
 
         if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
             kp::claw::toggle();
-            
+            kp::lift::bump_up();
         }
-       }
+        if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
+            kp::toggle::toggle();
+}
 
         // Lift Controls
         if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
@@ -109,6 +110,7 @@ void opcontrol() {
         else if (!kp::lift::is_homing()) {
             kp::lift::brake();
         }
+        
 
         // Homing Reset
         if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X)) {
@@ -121,4 +123,5 @@ void opcontrol() {
         #endif
         
         kp::controller::delay();
+    }
     }

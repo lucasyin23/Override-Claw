@@ -11,10 +11,10 @@ namespace kp::lift {
     static bool is_holding = false;
     static bool is_homed = true;
     static bool is_homing_running = false;
+    static bool is_bumping = false;
 
     void initialize() {
         lift_motors.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-        // Set current limit to 2500 mA (100% of maximum V5 motor current for full torque)
         lift_motors.set_current_limit(2500);
         lift_motors.move_voltage(0);
         lift_motors.tare_position();
@@ -22,6 +22,7 @@ namespace kp::lift {
         is_holding = false;
         is_homed = true;
         is_homing_running = false;
+        is_bumping = false;
     }
 
     bool is_bottom() {
@@ -38,6 +39,10 @@ namespace kp::lift {
     }
 
     void set_power(int input) {
+        if (is_homing_running || is_bumping) {
+            return;
+        }
+
         if (input != 0) {
             is_homed = false; // Driver input clears homed state lock
         }
@@ -50,7 +55,7 @@ namespace kp::lift {
             return;
         }
 
-        // Scale joystick value: up is capped at 85% speed (10200 mV), down matches homing speed (-3500 mV)
+        // Scale button value: up is capped at 85% speed (10200 mV), down matches homing speed (-3500 mV)
         int voltage = 0;
         if (input > 0) {
             voltage = (input * 10200) / 127;
@@ -62,8 +67,12 @@ namespace kp::lift {
     }
 
     void brake() {
+        if (is_homing_running || is_bumping) {
+            return;
+        }
+
         // Coast and zero voltage if homing in progress, homed, at limit switch, or at floor
-        if (is_homing_running || is_homed || is_bottom() || lift_motors.get_position() <= 10.0) {
+        if (is_homed || is_bottom() || lift_motors.get_position() <= 10.0) {
             lift_motors.move_voltage(0);
             lift_motors.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
             is_holding = false;
@@ -80,11 +89,28 @@ namespace kp::lift {
         lift_motors.move_absolute(hold_target, 200);
     }
 
+    // Bump the lift up by 180 degrees (half a rotation) when claw toggles
+    void bump_up() {
+        if (!is_homing_running && !is_bumping) {
+            is_bumping = true;
+            is_holding = false;
+            is_homed = false;
+            
+            lift_motors.move_relative(180.0, 200);
+            
+            // Background task to hold manual overrides for 400ms while the bump finishes
+            pros::Task([] {
+                pros::delay(400);
+                is_bumping = false;
+                return 0;
+            });
+        }
+    }
+
     static void home_worker() {
         uint32_t start_time = pros::millis();
         const uint32_t timeout_ms = 3500;
 
-        // If already resting on bottom limit switch, zero and exit immediately
         if (is_bottom()) {
             lift_motors.move_voltage(0);
             lift_motors.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
@@ -95,17 +121,14 @@ namespace kp::lift {
             return;
         }
 
-        // Drive lift down slowly until limit switch triggers or timeout expires
         while (!is_bottom() && (pros::millis() - start_time < timeout_ms)) {
             lift_motors.move_voltage(-3500);
             pros::delay(10);
         }
 
-        // Settle motors and stop
         lift_motors.move_voltage(0);
         pros::delay(80);
 
-        // Coast and tare encoder
         lift_motors.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
         tare_position();
 
@@ -116,7 +139,7 @@ namespace kp::lift {
     }
 
     void home() {
-        if (!is_homing_running) {
+        if (!is_homing_running && !is_bumping) {
             is_homing_running = true;
             is_holding = false;
             is_homed = false;
