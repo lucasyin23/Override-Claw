@@ -45,10 +45,6 @@ void opcontrol() {
 
         kp::chassis::refresh_xy();
 
-        if (CTRL_PRESS_ONCE(UP)) {
-            kp::vision::launch_vision_tuner();
-        }
-
         if (CTRL_PRESS_ONCE(LEFT)) {
             kp::chassis::launch_angular_adjustment();
         }

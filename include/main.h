@@ -49,7 +49,6 @@
 #include "kp/chassis.hpp"
 #include "kp/claw.hpp"
 #include "kp/utility.hpp"
-#include "kp/vision.hpp"
 #include "kp/toggle.hpp"
 #include "kp/teleop.hpp"
 #include "kp/path_recording.hpp"
