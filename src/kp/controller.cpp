@@ -27,7 +27,7 @@ namespace kp::controller {
         if (controllerLCDMutex.take(100)) {
           lemlib::Pose p = kp::chassis::current_pose();
 
-          master.print(0, 0, "X %+06.1f %02d%%", p.x, pros::battery::get_capacity());
+          master.print(0, 0, "X %+06.1f %02.0f%%", p.x, pros::battery::get_capacity());
           pros::delay(50);
           master.print(1, 0, "Y %+06.1f", p.y);
           pros::delay(50);
@@ -46,6 +46,14 @@ namespace kp::controller {
       pros::delay(pattern.length() * 500);
       controllerLCDMutex.give();
     }
+  }
+
+  void pause_screen() {
+    controllerLCDMutex.take(500);
+  }
+
+  void resume_screen() {
+    controllerLCDMutex.give();
   }
 
   bool lock() {

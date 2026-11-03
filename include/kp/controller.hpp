@@ -13,6 +13,8 @@ namespace kp::controller {
   bool is_ready();
   void ready();
   void rumble(std::string pattern);
+  void pause_screen();   // stop the setup-screen readout so another tool can use the controller screen
+  void resume_screen();
 }
 
 #define CTRL_PRESS(button) kp::controller::get_master().get_digital(DIGITAL_##button)
