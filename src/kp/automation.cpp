@@ -18,7 +18,7 @@ namespace kp::automation {
 
       LCD_MAIN_CLEAR
       LCD_1("AUTOMATION TESTER")
-      LCD_3("R1:NEXT | R2:TEST | Y:RESET")
+      LCD_3("R1:NEXT | R2:TEST | B:RESET")
       LCD_4("X:EXIT")
 
       

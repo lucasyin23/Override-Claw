@@ -10,6 +10,6 @@ namespace automation {
         lemlib::Chassis *chassis = kp::chassis::get_chassis();
         chassis->setPose(0, 0, 0);
 
-        chassis->moveToPoint( 0,7, 2000, {.maxSpeed = 10});
+        chassis->moveToPoint( 0,7, 2000, {.maxSpeed = 10}, false);
     }
 }

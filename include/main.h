@@ -51,6 +51,9 @@
 #include "kp/utility.hpp"
 #include "kp/vision.hpp"
 #include "kp/toggle.hpp"
+#include "kp/teleop.hpp"
+#include "kp/path_recording.hpp"
+#include "kp/path_recorder.hpp"
 
 #include "automation/test.hpp"
 

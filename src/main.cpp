@@ -1,15 +1,18 @@
 #include "main.h"
 #include "pros/misc.h"
 
-#define CONTROLLER_MOVEMENT
 std::string alliance = "N/A";
 
 void initialize() {
     pros::lcd::initialize();
     kp::chassis::initialize();
+    // First entry = the default auton. With nothing recorded it does nothing.
+    kp::automation::set("recorded", kp::pathrec::play_recorded);
+    kp::automation::set("drive", automation::drive);
     kp::controller::initialize();
     kp::lift::initialize();
-    kp::automation::set("drive", automation::drive);
+    kp::claw::initialize();
+    kp::toggle::initialize();
 }
 
 void disabled() {}
@@ -18,10 +21,14 @@ void competition_initialize() {}
 
 void autonomous() {
     kp::automation::run();
-} 
+}
 
 void opcontrol() {
-    pros::Controller master(pros::E_CONTROLLER_MASTER);
+    // The team presses A before plugging in. This covers forgetting: on field control
+    // the setup screen would leave the lift and claw dead.
+    if (pros::competition::is_connected()) {
+        kp::controller::ready();
+    }
 
     // Pre-ready loop
     while (kp::controller::is_ready() == false) {
@@ -32,9 +39,9 @@ void opcontrol() {
 
         LCD_MAIN_CLEAR
         LCD_1("# %s # %s", alliance, kp::automation::title())
-        LCD_2("A:READY / B:RESET")
-        LCD_3("R1:ATM NEXT / R2:ATM PREPARE / DN:ATM TESTER")
-        LCD_4("LF:PID ANGLE / RT:PID LINEAR")
+        LCD_2("A:READY / X:RESET / Y:RECORD / B:PLAY / L1:PRINT")
+        LCD_3("R1:ATM NEXT / R2:ATM RUN / DN:ATM TESTER")
+        LCD_4("LF:PID ANGLE / RT:PID LINEAR / UP:VISION")
 
         kp::chassis::refresh_xy();
 
@@ -69,6 +76,18 @@ void opcontrol() {
             CTRL_VIBRATE(".")
         }
 
+        if (CTRL_PRESS_ONCE(Y)) {
+            kp::path_recorder::run();
+        }
+
+        if (CTRL_PRESS_ONCE(B)) {
+            kp::pathrec::play_recorded();
+        }
+
+        if (CTRL_PRESS_ONCE(L1)) {
+            kp::path_recorder::dump_saved();
+        }
+
         if (CTRL_PRESS_ONCE(A)) {
             kp::controller::ready();
             kp::controller::short_delay();
@@ -87,41 +106,7 @@ void opcontrol() {
     LCD_1("# %s # %s", alliance, kp::automation::title())
 
     while (kp::controller::is_ready() == true) {
-
-        if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
-            kp::claw::toggle();
-        }
-
-        if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
-            kp::claw::toggle();
-            kp::lift::bump_up();
-        }
-        if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
-            kp::toggle::toggle();
-}
-
-        // Lift Controls
-        if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-            kp::lift::set_power(127);
-        } 
-        else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-            kp::lift::set_power(-127);
-        } 
-        else if (!kp::lift::is_homing()) {
-            kp::lift::brake();
-        }
-        
-
-        // Homing Reset
-        if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X)) {
-            kp::lift::home(); // Runs in background task, does not freeze controls
-        }
-
-        // Safety & Drive Controls
-        #ifdef CONTROLLER_MOVEMENT
-        kp::chassis::track_dual_joystick(1, 1);
-        #endif
-        
+        kp::teleop::tick();
         kp::controller::delay();
     }
-    }
+}

@@ -365,13 +365,8 @@ namespace kp::chassis {
     int32_t straight_vector = master.get_analog(ANALOG_LEFT_Y);
     int32_t turn_vector = master.get_analog(ANALOG_RIGHT_X);
 
-    if (abs(straight_vector) > 5) {
-      left_motors.move(base * straight_vector + base * p * turn_vector);
-      right_motors.move(base * straight_vector - base * p * turn_vector);
-    } else {
-      left_motors.move(base * straight_vector + base * p * 0.5 * turn_vector);
-      right_motors.move(base * straight_vector - base * p * 0.5 * turn_vector);
-    }
+    left_motors.move(base * straight_vector + base * p * turn_vector);
+    right_motors.move(base * straight_vector - base * p * turn_vector);
   }
 
   void move_by_time(int milliseconds, int voltage) {
