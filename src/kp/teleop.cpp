@@ -21,6 +21,7 @@ namespace kp::teleop {
             }
         }
 
+        //Toggle the toggle
         if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
             kp::toggle::toggle();
         }
