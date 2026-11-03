@@ -2,7 +2,7 @@
 
 namespace kp::chassis {
   namespace {
-    pros::Imu imu(3);
+    pros::Imu imu(13);
     pros::Controller master(pros::E_CONTROLLER_MASTER);
 
     // motor groups
@@ -10,7 +10,7 @@ namespace kp::chassis {
     pros::MotorGroup right_motors({11, 12}, pros::MotorGearset::blue); 
 
     // tracking wheels
-    pros::Rotation horizontal_encoder(-9);
+    pros::Rotation horizontal_encoder(3);
     // pros::Rotation vertical_encoder(-10);
 
     lemlib::TrackingWheel horizontal(&horizontal_encoder, lemlib::Omniwheel::NEW_275, -3.25);
@@ -19,7 +19,7 @@ namespace kp::chassis {
     // drivetrain settings
     lemlib::Drivetrain drivetrain(&left_motors, // left motor group
                                   &right_motors, // right motor group
-                                  10.75, // track width
+                                  11.25, // track width
                                   lemlib::Omniwheel::NEW_325,
                                   360, // drivetrain rpm on the wheels
                                   2 // horizontal drift is 2. If we had traction wheels, it would have been 8

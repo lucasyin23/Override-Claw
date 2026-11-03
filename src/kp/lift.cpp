@@ -15,7 +15,7 @@ namespace kp::lift {
 
     void initialize() {
         lift_motors.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-        lift_motors.set_current_limit(2500);
+        lift_motors.set_current_limit(2250);
         lift_motors.move_voltage(0);
         lift_motors.tare_position();
         hold_target = 0.0;
@@ -55,12 +55,12 @@ namespace kp::lift {
             return;
         }
 
-        // Scale button value: up is capped at 85% speed (10200 mV), down matches homing speed (-3500 mV)
+        // Scale button value: up capped at 10500 mV for faster movement, down matches homing speed (-3500 mV)
         int voltage = 0;
         if (input > 0) {
-            voltage = (input * 10200) / 127;
+            voltage = (input * 12000) / 127;
         } else if (input < 0) {
-            voltage = (input * 3500) / 127;
+            voltage = (input * 4000) / 127;
         }
 
         lift_motors.move_voltage(voltage);
@@ -89,14 +89,14 @@ namespace kp::lift {
         lift_motors.move_absolute(hold_target, 200);
     }
 
-    // Bump the lift up by 180 degrees (half a rotation) when claw toggles
+    // Bump the lift up by 120 degrees when claw toggles
     void bump_up() {
         if (!is_homing_running && !is_bumping) {
             is_bumping = true;
             is_holding = false;
             is_homed = false;
             
-            lift_motors.move_relative(180.0, 200);
+            lift_motors.move_relative(120.0, 200);
             
             // Background task to hold manual overrides for 400ms while the bump finishes
             pros::Task([] {
