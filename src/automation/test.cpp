@@ -1,4 +1,3 @@
-#include "kp/vision.hpp"
 #include "main.h"
 #include "pros/rtos.hpp"
 
