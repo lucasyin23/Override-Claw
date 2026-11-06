@@ -67,6 +67,10 @@ void opcontrol() {
             }
         }
 
+        if (CTRL_PRESS_ONCE(L2)) {
+            kp::claw::toggle();
+        }
+
         if (CTRL_PRESS_ONCE(X)) {
             kp::chassis::reset();
             CTRL_VIBRATE(".")

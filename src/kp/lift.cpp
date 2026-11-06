@@ -18,7 +18,7 @@ namespace kp::lift {
 
     static constexpr int UP_MV = 12000;
     static constexpr int DOWN_MV = 4000;   // the switch only clicks reliably below full speed
-    static constexpr int HOME_MV = 3500;
+    static constexpr int HOME_MV = 4000;
     static constexpr uint32_t HOME_TIMEOUT_MS = 3500;
 
     static constexpr int AUTO_RPM = 200;   // go_to and bump_up
@@ -36,6 +36,8 @@ namespace kp::lift {
     static bool is_homed = true;
     static bool is_homing_running = false;
     static bool is_bumping = false;
+    static bool is_stopped = false;     // set by stop_all(); cleared by any new lift command
+    static bool home_abort = false;     // set by L1/L2 during homing; home_worker checks it
 
     static uint32_t stall_since = 0;
     static int stall_dir = 0;  // direction that is stalled; ignored until the button is let go
@@ -101,6 +103,8 @@ namespace kp::lift {
         is_coasting = false;
         is_homing_running = false;
         is_bumping = false;
+        is_stopped = false;
+        home_abort = false;
         stall_since = 0;
         stall_dir = 0;
         last_dir = 0;
@@ -122,9 +126,36 @@ namespace kp::lift {
         return lift_motors.get_position();
     }
 
+    // Stop the lift completely. Motors get zero voltage and coast mode, and the
+    // lift will not re-engage its hold until L1 or L2 is pressed again.
+    void stop_all() {
+        is_stopped = true;
+        stall_since = 0;
+        stall_dir = 0;
+        last_dir = 0;
+        stop_holding();
+        lift_motors.set_brake_mode_all(pros::E_MOTOR_BRAKE_COAST);
+        lift_motors.move_voltage(0);
+        is_coasting = true;
+    }
+
     void set_power(int input) {
-        if (is_homing_running || is_bumping) {
+        // L1/L2 during homing: cancel the homing. The button is still held on the next
+        // teleop tick, so that call applies the drive normally.
+        if (is_homing_running) {
+            if (input != 0) {
+                home_abort = true;
+            }
             return;
+        }
+
+        if (is_bumping) {
+            return;
+        }
+
+        // Any real lift command clears the stopped state
+        if (input != 0) {
+            is_stopped = false;
         }
 
         if (input == 0) {
@@ -177,6 +208,10 @@ namespace kp::lift {
         if (is_homing_running || is_bumping) {
             return;
         }
+        // After stop_all(), don't re-engage the hold on every teleop tick
+        if (is_stopped) {
+            return;
+        }
         stall_since = 0;
         stall_dir = 0;
         last_dir = 0;
@@ -186,6 +221,7 @@ namespace kp::lift {
     // Bump the lift up when the claw grabs
     void bump_up() {
         if (!is_homing_running && !is_bumping) {
+            is_stopped = false;
             is_bumping = true;
             is_homed = false;
             stop_holding();
@@ -215,6 +251,7 @@ namespace kp::lift {
         if (is_homing_running) {
             return;
         }
+        is_stopped = false;
         is_homed = false;
         stall_dir = 0;
         stop_holding();
@@ -240,24 +277,27 @@ namespace kp::lift {
             return;
         }
 
-        while (!is_bottom() && (pros::millis() - start_time < HOME_TIMEOUT_MS)) {
+        // Stops early if the switch is hit, the timeout runs out, or L1/L2 cancels it
+        while (!is_bottom() && !home_abort && (pros::millis() - start_time < HOME_TIMEOUT_MS)) {
             lift_motors.move_voltage(-HOME_MV);
             pros::delay(10);
         }
 
+        const bool aborted = home_abort;
         const bool reached = is_bottom();
         coast();
         pros::delay(80);
 
-        // Only a real switch click is a zero. On a timeout the old zero stays, the lift
-        // keeps working, and driving it down onto the switch re-zeroes it.
+        // Only a real switch click is a zero. On a timeout or abort the old zero stays,
+        // the lift keeps working, and driving it down onto the switch re-zeroes it.
         if (reached) {
             lift_motors.tare_position_all();
             is_homed = true;
         }
+        home_abort = false;
         is_homing_running = false;
 
-        if (!reached) {
+        if (!reached && !aborted) {
             printf("[lift] homing timed out without hitting the switch\n");
             kp::controller::get_master().print(1, 0, "HOME FAILED");
             pros::delay(60);
@@ -267,8 +307,10 @@ namespace kp::lift {
 
     void home() {
         if (!is_homing_running && !is_bumping) {
+            is_stopped = false;
             is_homing_running = true;
             is_homed = false;
+            home_abort = false;
             stall_since = 0;
             stall_dir = 0;
             stop_holding();

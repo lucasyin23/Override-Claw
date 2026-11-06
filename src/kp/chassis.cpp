@@ -26,9 +26,9 @@ namespace kp::chassis {
     );
 
     // angular motion controller
-    lemlib::ControllerSettings angular_controller(1.98, // proportional gain (kP)
+    lemlib::ControllerSettings angular_controller(2, // proportional gain (kP)
                                                 0, // integral gain (kI)
-                                                9, // derivative gain (kD)
+                                                11, // derivative gain (kD)
                                                 0, // anti windup
                                                 0.5, // small error ··range, in degrees
                                                 100, // small error range timeout, in milliseconds
@@ -38,9 +38,9 @@ namespace kp::chassis {
     );
 
     // lateral motion controller
-    lemlib::ControllerSettings linear_controller(8, // proportional gain (kP)
+    lemlib::ControllerSettings linear_controller(0, // proportional gain (kP)
                                                 0, // integral gain (kI)
-                                                60, // derivative gain (kD)
+                                                0, // derivative gain (kD)
                                                 3, // anti windup
                                                 1, // small error range, in inches
                                                 100, // small error range timeout, in milliseconds
